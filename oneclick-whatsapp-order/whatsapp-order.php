@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
  * Plugin Name:       OneClick Chat to Order
  * Plugin URI:        https://onlinestorekit.com/oneclick-chat-to-order/
  * Description:       Make it easy for your customers to order via WhatsApp chat through a single button click with detailing information about a product including custom message. OneClick Chat to Order button can be displayed on a single product page and as a floating button. GDPR-ready!
- * Version:           1.0.6
+ * Version:           1.0.7
  * Author:            Walter Pinem
  * Author URI:        https://walterpinem.me/projects/
  * Developer:         Walter Pinem | Online Store Kit
@@ -18,13 +18,13 @@ if (!defined('ABSPATH')) {
  * License:           GPL-3.0
  * License URI:       http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  *
- * Requires at least: 5.0
- * Tested up to: 6.4.2
+ * Requires at least: 5.3
+ * Requires PHP:      7.4
  *
- * WC requires at least: 7.2.2
- * WC tested up to: 8.4.0
+ * WC requires at least: 8.2
+ * WC tested up to: 9.3.3
  *
- * Copyright: © 2019 - 2023 Walter Pinem.
+ * Copyright: © 2019 - 2024 Walter Pinem.
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  */
@@ -69,31 +69,33 @@ function OCWAORDER_plugin_init()
     // Start calling main css
     function OCWAORDER_include_plugin_css()
     {
-        wp_register_style('wa_order_style',  plugin_dir_url(__FILE__) . 'assets/css/main-style.css');
-        wp_enqueue_style('wa_order_style');
+        if (!is_admin()) {
+            wp_register_style('wa_order_style', plugin_dir_url(__FILE__) . 'assets/css/main-style.css', array(), OCWAORDER_PLUGIN_VERSION);
+            wp_enqueue_style('wa_order_style');
+        }
     }
     add_action('wp_enqueue_scripts', 'OCWAORDER_include_plugin_css');
 
     // Start calling main frontend js
     function OCWAORDER_include_plugin_main_js()
     {
-        wp_register_script('wa_order_main_front_js',  plugin_dir_url(__FILE__) . 'assets/js/wa-single-button.js');
+        wp_register_script('wa_order_main_front_js',  plugin_dir_url(__FILE__) . 'assets/js/wa-single-button.js', array('jquery'), OCWAORDER_PLUGIN_VERSION, true);
     }
     add_action('wp_enqueue_scripts', 'OCWAORDER_include_plugin_main_js');
 
     // Start calling admin css
     function OCWAORDER_include_admin_css()
     {
-        wp_register_style('wa_order_style_admin',  plugin_dir_url(__FILE__) . 'assets/css/admin-style.css');
-        wp_register_style('wa_order_selet2_style',  plugin_dir_url(__FILE__) . 'assets/css/select2.min.css');
-        wp_enqueue_style('wa_order_style_admin');
+        wp_enqueue_style('wa_order_style_admin',  plugin_dir_url(__FILE__) . 'assets/css/admin-style.css', array(), OCWAORDER_PLUGIN_VERSION);
+        wp_register_style('wa_order_selet2_style',  plugin_dir_url(__FILE__) . 'assets/css/select2.min.css', array(), '4.1.0');
     }
     add_action('admin_enqueue_scripts', 'OCWAORDER_include_admin_css');
 
     function OCWAORDER_include_admin_js()
     {
-        wp_register_script('wa_order_js_admin',  plugin_dir_url(__FILE__) . 'assets/js/admin-main.js');
-        wp_register_script('wa_order_js_select2',  plugin_dir_url(__FILE__) . 'assets/js/select2.min.js');
+        wp_enqueue_script('wa_order_js_admin',  plugin_dir_url(__FILE__) . 'assets/js/admin-main.js', array('jquery'), OCWAORDER_PLUGIN_VERSION, true);
+        wp_register_script('wa_order_js_select2',  plugin_dir_url(__FILE__) . 'assets/js/select2.min.js', array('jquery'), '4.1.0', true);
+        wp_register_script('wa_order_select2_helper',  plugin_dir_url(__FILE__) . 'assets/js/select2-helper.js', array('wa_order_js_select2'), OCWAORDER_PLUGIN_VERSION, true);
         wp_register_script('wp-color-picker-alpha', plugins_url('assets/js/wp-color-picker-alpha.min.js',  __FILE__), array('wp-color-picker'), '3.0.3', true);
         wp_register_script('wp-color-picker-init', plugins_url('assets/js/wp-color-picker-init.js',  __FILE__), array('wp-color-picker-alpha'), '3.0.0', true);
     }
@@ -185,4 +187,74 @@ function wa_order_get_phone_number($post_id)
     }
 
     return $phone_number;
+}
+
+// A function to dynamically generate WhatsApp URL
+function wa_order_the_url($phone_number, $message)
+{
+    // Detect the device type based on the User-Agent - Check if 'HTTP_USER_AGENT' exists in $_SERVER before using it
+    $user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'])) : '';
+
+    // Get user settings for WhatsApp base URLs
+    $mobile_base_url    = get_option('wa_order_whatsapp_base_url', 'api'); // Default to api.whatsapp.com
+    $desktop_base_url   = get_option('wa_order_whatsapp_base_url_desktop', 'web'); // Default to web.whatsapp.com
+    // Check if it's a mobile device
+    if (wp_is_mobile() || preg_match('/iPhone|Android|iPod|iPad|webOS|BlackBerry|Windows Phone|Opera Mini|IEMobile|Mobile/', $user_agent)) {
+        // Mobile device detected
+        if ($mobile_base_url === 'protocol') {
+            $base_url = 'whatsapp://send?'; // Use whatsapp:// protocol
+        } else {
+            $base_url = 'https://api.whatsapp.com/send?'; // Use api.whatsapp.com
+        }
+    } else {
+        // Desktop or web browser detected
+        if ($desktop_base_url === 'api') {
+            $base_url = 'https://api.whatsapp.com/send?'; // Use api.whatsapp.com
+        } elseif ($desktop_base_url === 'protocol') {
+            $base_url = 'whatsapp://send?'; // Use whatsapp://send
+        } else {
+            $base_url = 'https://web.whatsapp.com/send?'; // Use web.whatsapp.com
+        }
+    }
+    // Encode the phone number and message
+    $encoded_phone = urlencode($phone_number);
+    $encoded_message = rawurlencode($message);
+    // Build the full WhatsApp URL
+    $button_url = $base_url . 'phone=' . $encoded_phone . '&text=' . $encoded_message . '&app_absent=0';
+
+    return $button_url;
+}
+// Add the whatsapp protocol to the allowed protocols
+function wa_order_allow_whatsapp_protocol($protocols)
+{
+    $protocols[] = 'whatsapp';
+    return $protocols;
+}
+add_filter('kses_allowed_protocols', 'wa_order_allow_whatsapp_protocol');
+
+// Customer Shipping Details Function to Simplify the Logic
+function wa_order_get_shipping_address($customer)
+{
+    // Get full state name if available
+    $country_code = $customer->get_shipping_country();
+    $state_code = $customer->get_shipping_state();
+    $states = WC()->countries->get_states($country_code);
+    $state_name = isset($states[$state_code]) ? $states[$state_code] : '';
+
+    // Get full country name if available
+    $countries = WC()->countries->get_countries();
+    $country_name = isset($countries[$country_code]) ? $countries[$country_code] : '';
+
+    // Build the full address, filtering out empty values
+    $address_parts = array_filter(array(
+        trim($customer->get_shipping_first_name() . ' ' . $customer->get_shipping_last_name()), // Combine first and last name
+        $customer->get_shipping_address(),
+        $customer->get_shipping_address_2(),
+        $customer->get_shipping_city(),
+        $state_name,  // Add state only if it's valid
+        $country_name,  // Add country only if it's valid
+        $customer->get_shipping_postcode()
+    ));
+
+    return implode("\r\n", $address_parts);
 }

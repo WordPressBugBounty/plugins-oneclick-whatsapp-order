@@ -1,10 +1,10 @@
 === OneClick Chat to Order ===
 Contributors: walterpinem
 Donate link: https://www.paypal.me/WalterPinem
-Tags: woocommerce, woocommerce whatsapp, whatsapp, order, product, whatsapp order
-Requires at least: 5.0
-Tested up to: 6.4.2
-Stable tag: 1.0.6
+Tags: woocommerce, woocommerce whatsapp, whatsapp, whatsapp chat, click to chat
+Requires at least: 5.3
+Tested up to: 6.6.2
+Stable tag: 1.0.7
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -24,7 +24,8 @@ Formerly known as "OneClick WhatsApp Order", **OneClick Chat to Order** will mak
 * More powerful add-ons coming soon!
 
 ### **The Features You'll Love:**
-* **NEW!: Three new selectable WhatsApp button positions** on single product page.
+* **NEW!: Single Product Shortcode** generator. Display the shortcode on the current product page or set a specific product by ID, and the corresponding WhatsApp message will include the product's details.
+* **NEW!: Five selectable WhatsApp button positions** on single product page.
 * **NEW!: Hide WhatsApp and floating buttons** on all posts and pages, specific posts, pages, product categories and tags.
 * **NEW!: Button color customization options** for WhatsApp and floating buttons.
 * **NEW!: Multiple Numbers feature.** Now you can add more than one WhatsApp numbers and assign them to specific page on your entire store. [**Learn more**](https://walterpinem.me/projects/oneclick-chat-to-order-mutiple-numbers-feature/) or [**watch tutorial**](https://www.youtube.com/watch?v=TSBsxEdiNuA).
@@ -117,6 +118,38 @@ You will get answers to many of your questions on my [contact form](https://walt
 8. WhatsApp button shortcode output on the front-end
 
 == Changelog ==
+= 1.0.7 - September 30, 2024 =
+* **[New]** Added a Single Product Page shortcode that pulls in product details and can be placed anywhere.
+* **[New]** Introduced options for controlling the WhatsApp base URL for both mobile and desktop devices.
+* **[Improvement]** Enhanced text configurability for better label customization in WhatsApp messages.
+* **[Improvement]** Added an option to include both regular and sale prices in messages sent from single product pages.
+* **[Improvement]** Introduced two new button positions on single product pages: "After Single Product Summary" and "Around Product Share Area".
+* **[Improvement]** Added an option to make the WhatsApp button full width on single product pages.
+* **[Improvement]** Introduced an option to include tax information in messages sent from the Cart page.
+* **[Improvement]** Enhanced WhatsApp messages sent from the Cart page to include coupons, price calculations, tax, shipping details, and more.
+* **[Improvement]** Added an option to display the "Total Products" label in WhatsApp messages sent from the Thank You page.
+* **[Improvement]** Introduced options to include or exclude coupon/discount information in WhatsApp messages sent from the Thank You page.
+* **[Improvement]** Added options to include or exclude the Order Summary Link in WhatsApp messages sent from the Thank You page.
+* **[Improvement]** Added an option to include or exclude the Payment Link in WhatsApp messages sent from the Thank You page.
+* **[Improvement]** Added an option to include or exclude the "View Order" link in WhatsApp messages sent from the Thank You page.
+* **[Improvement]** Introduced an option to include or exclude the Order Number in WhatsApp messages sent from the Thank You page.
+* **[Improvement]** Added an option to include or exclude tax information in WhatsApp messages sent from the Thank You page.
+* **[Improvement]** Fixed an issue where key details were missing from messages sent from the Thank You page.
+* **[Improvement]** Refactored the message structure for the Thank You page to conditionally display shipping address details if they differ from the billing address.
+* **[Improvement]** Fixed an issue where the WhatsApp button did not display on the Cart page.
+* **[Improvement]** Added transients for improved database performance.
+* **[Improvement]** Optimized, sanitized, and made all strings translation-ready.
+* **[Improvement]** Refactored the codebase for single product pages for better performance.
+* **[Improvement]** Refactored the codebase for the shop loop and product archive pages.
+* **[Improvement]** Added padding and margin options for the floating button.
+* **[Improvement]** Added padding and margin options for the floating button icon.
+* **[Improvement]** Enhanced the rendering of the Floating Button.
+* **[Improvement]** Fixed an issue where the WhatsApp button wasn't visible when the "Hide Add to Cart" option was enabled.
+* **[Improvement]** Introduced the ability to customize output via `apply_filters()` for various configurable variables.
+* **[Improvement]** Added filters to make key elements configurable across various sections, such as product names, prices, and URLs for WhatsApp messages.
+* **[Improvement]** Refactored and optimized the floating button CSS, making margin and padding values dynamically configurable via settings.
+* **[Improvement]** Added validation checks and improved security for input handling across shortcode attributes, ensuring safer usage and improved performance.
+
 = 1.0.6 - December 15, 2023 =
 * Fixed Stored Cross-Site Scripting for the 'waorder' shortcode
 * Fixed the WhatsApp button not showing on Thank You / Order Received page.
@@ -285,6 +318,34 @@ You will get answers to many of your questions on my [contact form](https://walt
 * Initial Release
 
 == Upgrade Notice ==
-= 1.0.4.1 - December 07, 2020 =
-* Fixed a minor issue on Floating settings tab
-* Code cleaned up
+= 1.0.7 - September 30, 2024 =
+* **[New]** Added a Single Product Page shortcode that pulls in product details and can be placed anywhere.
+* **[New]** Introduced options for controlling the WhatsApp base URL for both mobile and desktop devices.
+* **[Improvement]** Enhanced text configurability for better label customization in WhatsApp messages.
+* **[Improvement]** Added an option to include both regular and sale prices in messages sent from single product pages.
+* **[Improvement]** Introduced two new button positions on single product pages: "After Single Product Summary" and "Around Product Share Area".
+* **[Improvement]** Added an option to make the WhatsApp button full width on single product pages.
+* **[Improvement]** Introduced an option to include tax information in messages sent from the Cart page.
+* **[Improvement]** Enhanced WhatsApp messages sent from the Cart page to include coupons, price calculations, tax, shipping details, and more.
+* **[Improvement]** Added an option to display the "Total Products" label in WhatsApp messages sent from the Thank You page.
+* **[Improvement]** Introduced options to include or exclude coupon/discount information in WhatsApp messages sent from the Thank You page.
+* **[Improvement]** Added options to include or exclude the Order Summary Link in WhatsApp messages sent from the Thank You page.
+* **[Improvement]** Added an option to include or exclude the Payment Link in WhatsApp messages sent from the Thank You page.
+* **[Improvement]** Added an option to include or exclude the "View Order" link in WhatsApp messages sent from the Thank You page.
+* **[Improvement]** Introduced an option to include or exclude the Order Number in WhatsApp messages sent from the Thank You page.
+* **[Improvement]** Added an option to include or exclude tax information in WhatsApp messages sent from the Thank You page.
+* **[Improvement]** Fixed an issue where key details were missing from messages sent from the Thank You page.
+* **[Improvement]** Refactored the message structure for the Thank You page to conditionally display shipping address details if they differ from the billing address.
+* **[Improvement]** Fixed an issue where the WhatsApp button did not display on the Cart page.
+* **[Improvement]** Added transients for improved database performance.
+* **[Improvement]** Optimized, sanitized, and made all strings translation-ready.
+* **[Improvement]** Refactored the codebase for single product pages for better performance.
+* **[Improvement]** Refactored the codebase for the shop loop and product archive pages.
+* **[Improvement]** Added padding and margin options for the floating button.
+* **[Improvement]** Added padding and margin options for the floating button icon.
+* **[Improvement]** Enhanced the rendering of the Floating Button.
+* **[Improvement]** Fixed an issue where the WhatsApp button wasn't visible when the "Hide Add to Cart" option was enabled.
+* **[Improvement]** Introduced the ability to customize output via `apply_filters()` for various configurable variables.
+* **[Improvement]** Added filters to make key elements configurable across various sections, such as product names, prices, and URLs for WhatsApp messages.
+* **[Improvement]** Refactored and optimized the floating button CSS, making margin and padding values dynamically configurable via settings.
+* **[Improvement]** Added validation checks and improved security for input handling across shortcode attributes, ensuring safer usage and improved performance.

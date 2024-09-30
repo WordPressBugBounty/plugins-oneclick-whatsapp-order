@@ -1,4 +1,20 @@
 <?php
+// Prevent direct access
+if (!defined('ABSPATH')) {
+    exit; // Exit if accessed directly
+}
+
+/**
+ * OneClick Chat to Order Single Product Editor Screen
+ *
+ * @package     OneClick Chat to Order
+ * @author      Walter Pinem <hello@walterpinem.me>
+ * @link        https://walterpinem.me/
+ * @link        https://onlinestorekit.com/oneclick-chat-to-order/
+ * @copyright   Copyright (c) 2019 - 2024, Walter Pinem | Online Store Kit
+ * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
+ * @category    Admin Page
+ */
 
 // Adding a new custom tab to the Products Metabox
 add_filter('woocommerce_product_data_tabs', 'add_oneclick_options_product_data_tab', 99, 1);

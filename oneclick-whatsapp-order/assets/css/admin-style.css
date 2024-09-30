@@ -128,7 +128,7 @@
 	box-shadow: inset 0px 1px 3px rgba(255,255,255,.4);
 	color: #fff;
 	font-size: initial;
-	font-family: Helvetica Neue;
+	font-family: inherit;
 	font-weight: 900;
 	font-style: normal;
  }

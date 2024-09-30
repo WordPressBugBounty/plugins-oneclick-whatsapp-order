@@ -4,11 +4,13 @@ if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
 /**
+ * OneClick Chat to Order Admin Settings Page
+ *
  * @package     OneClick Chat to Order
- * @author      Walter Pinem
- * @link        https://walterpinem.me
- * @link        https://www.seniberpikir.com/oneclick-wa-order-woocommerce/
- * @copyright   Copyright (c) 2019, Walter Pinem, Seni Berpikir
+ * @author      Walter Pinem <hello@walterpinem.me>
+ * @link        https://walterpinem.me/
+ * @link        https://onlinestorekit.com/oneclick-chat-to-order/
+ * @copyright   Copyright (c) 2019 - 2024, Walter Pinem | Online Store Kit
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  * @category    Admin Page
  */
@@ -83,7 +85,8 @@ function wa_order_get_settings()
         'wa-order-settings-group-button-config' => [
             'wa_order_selected_wa_number_single_product' => 'sanitize_text_field',
             'wa_order_option_dismiss_notice_confirmation' => 'sanitize_checkbox',
-            // 'wa_order_whatsapp_base_url' => 'sanitize_text_field', Removed in 1.0.5 version
+            'wa_order_whatsapp_base_url' => 'sanitize_text_field', // Reactivated in version 1.0.7
+            'wa_order_whatsapp_base_url_desktop' => 'sanitize_text_field',
             'wa_order_single_product_button_position' => 'sanitize_text_field',
             'wa_order_option_enable_single_product' => 'sanitize_checkbox',
             'wa_order_option_message' => 'sanitize_textarea_field',
@@ -95,8 +98,12 @@ function wa_order_get_settings()
             'wa_order_option_price_label' => 'sanitize_text_field',
             'wa_order_option_url_label' => 'sanitize_text_field',
             'wa_order_option_total_amount_label' => 'sanitize_text_field',
+            'wa_order_option_total_discount_label' => 'sanitize_text_field',
             'wa_order_option_payment_method_label' => 'sanitize_text_field',
             'wa_order_option_thank_you_label' => 'sanitize_text_field',
+            'wa_order_option_tax_label' => 'sanitize_text_field',
+            'wa_order_single_force_fullwidth' => 'sanitize_checkbox',
+            'wa_order_option_single_show_regular_sale_prices' => 'sanitize_checkbox',
         ],
         /*
         ******************************************** Display tab options ****************************************
@@ -143,7 +150,8 @@ function wa_order_get_settings()
             'wa_order_display_option_cart_hide_mobile' => 'sanitize_checkbox',
             'wa_order_display_option_checkout_hide_desktop' => 'sanitize_checkbox',
             'wa_order_display_option_checkout_hide_mobile' => 'sanitize_checkbox',
-            'wa_order_option_convert_phone_order_details' => 'sanitize_checkbox'
+            'wa_order_option_convert_phone_order_details' => 'sanitize_checkbox',
+            'wa_order_option_custom_message_backend_order_details' => 'sanitize_text_field'
         ],
         /*
     ******************************************** GDPR tab options ****************************************
@@ -173,7 +181,23 @@ function wa_order_get_settings()
             'wa_order_floating_hide_specific_posts' => 'wa_order_sanitize_array',
             'wa_order_floating_hide_specific_pages' => 'wa_order_sanitize_array',
             'wa_order_floating_hide_product_cats' => 'wa_order_sanitize_array',
-            'wa_order_floating_hide_product_tags' => 'wa_order_sanitize_array'
+            'wa_order_floating_hide_product_tags' => 'wa_order_sanitize_array',
+            'wa_order_floating_button_margin_top' => 'sanitize_text_field',
+            'wa_order_floating_button_margin_right' => 'sanitize_text_field',
+            'wa_order_floating_button_margin_bottom' => 'sanitize_text_field',
+            'wa_order_floating_button_margin_left' => 'sanitize_text_field',
+            'wa_order_floating_button_padding_top' => 'sanitize_text_field',
+            'wa_order_floating_button_padding_right' => 'sanitize_text_field',
+            'wa_order_floating_button_padding_bottom' => 'sanitize_text_field',
+            'wa_order_floating_button_padding_left' => 'sanitize_text_field',
+            'wa_order_floating_button_icon_margin_top' => 'sanitize_text_field',
+            'wa_order_floating_button_icon_margin_right' => 'sanitize_text_field',
+            'wa_order_floating_button_icon_margin_bottom' => 'sanitize_text_field',
+            'wa_order_floating_button_icon_margin_left' => 'sanitize_text_field',
+            'wa_order_floating_button_icon_padding_top' => 'sanitize_text_field',
+            'wa_order_floating_button_icon_padding_right' => 'sanitize_text_field',
+            'wa_order_floating_button_icon_padding_bottom' => 'sanitize_text_field',
+            'wa_order_floating_button_icon_padding_left' => 'sanitize_text_field'
         ],
         /*
     ******************************************** Shortcode tab options ****************************************
@@ -195,7 +219,8 @@ function wa_order_get_settings()
             'wa_order_option_cart_hide_checkout' => 'sanitize_checkbox',
             'wa_order_option_cart_hide_product_url' => 'sanitize_checkbox',
             'wa_order_option_cart_open_new_tab' => 'sanitize_checkbox',
-            'wa_order_option_cart_enable_variations' => 'sanitize_checkbox'
+            'wa_order_option_cart_enable_variations' => 'sanitize_checkbox',
+            'wa_order_option_cart_include_tax' => 'sanitize_checkbox'
         ],
         /*
     ******************************************** Thank You page tab options ****************************************
@@ -211,9 +236,17 @@ function wa_order_get_settings()
             'wa_order_option_custom_thank_you_include_order_date' => 'sanitize_checkbox',
             'wa_order_option_custom_thank_you_order_number' => 'sanitize_checkbox',
             'wa_order_option_custom_thank_you_order_number_label' => 'sanitize_text_field',
+            'wa_order_option_thank_you_order_summary_link' => 'sanitize_checkbox',
+            'wa_order_option_thank_you_order_summary_label' => 'sanitize_text_field',
+            'wa_order_option_thank_you_payment_link' => 'sanitize_checkbox',
+            'wa_order_option_thank_you_payment_link_label' => 'sanitize_text_field',
+            'wa_order_option_thank_you_view_order_link' => 'sanitize_checkbox',
+            'wa_order_option_thank_you_view_order_label' => 'sanitize_text_field',
             'wa_order_option_custom_thank_you_open_new_tab' => 'sanitize_checkbox',
             'wa_order_option_custom_thank_you_customer_details_label' => 'sanitize_text_field',
+            'wa_order_option_custom_thank_you_total_products_label' => 'sanitize_text_field',
             'wa_order_option_custom_thank_you_include_sku' => 'sanitize_checkbox',
+            'wa_order_option_custom_thank_you_include_tax' => 'sanitize_checkbox',
             'wa_order_option_custom_thank_you_inclue_coupon' => 'sanitize_checkbox',
             'wa_order_option_custom_thank_you_coupon_label' => 'sanitize_text_field'
         ],
@@ -238,12 +271,15 @@ function wa_order_deactivation()
     // delete_option( 'wa_order_option_phone_number' ); // Old phone number option
     delete_option('wa_order_selected_wa_number'); // New phone number option
     delete_option('wa_order_option_dismiss_notice_confirmation');
-    delete_option('wa_order_whatsapp_base_url'); // Removed 'wa_order_whatsapp_base_url' in 1.0.5 version
+    delete_option('wa_order_whatsapp_base_url'); // Reactivated in version 1.0.7
+    delete_option('wa_order_whatsapp_base_url_desktop');
     delete_option('wa_order_single_product_button_position');
     delete_option('wa_order_option_enable_single_product');
     delete_option('wa_order_option_message');
     delete_option('wa_order_option_text_button');
     delete_option('wa_order_option_target');
+    delete_option('wa_order_single_force_fullwidth');
+    delete_option('wa_order_option_single_show_regular_sale_prices');
     delete_option('wa_order_exclude_product_url');
     delete_option('wa_order_option_remove_btn');
     delete_option('wa_order_option_remove_btn_mobile');
@@ -277,6 +313,7 @@ function wa_order_deactivation()
     delete_option('wa_order_display_option_checkout_hide_desktop');
     delete_option('wa_order_display_option_checkout_hide_mobile');
     delete_option('wa_order_option_convert_phone_order_details');
+    delete_option('wa_order_option_custom_message_backend_order_details');
     delete_option('wa_order_gdpr_status_enable');
     delete_option('wa_order_gdpr_message');
     delete_option('wa_order_gdpr_privacy_page');
@@ -306,10 +343,12 @@ function wa_order_deactivation()
     delete_option('wa_order_option_cart_hide_product_url');
     delete_option('wa_order_option_cart_open_new_tab');
     delete_option('wa_order_option_cart_enable_variations');
+    delete_option('wa_order_option_cart_include_tax');
     delete_option('wa_order_option_quantity_label');
     delete_option('wa_order_option_price_label');
     delete_option('wa_order_option_url_label');
     delete_option('wa_order_option_total_amount_label');
+    delete_option('wa_order_option_total_discount_label');
     delete_option('wa_order_option_payment_method_label');
     delete_option('wa_order_option_thank_you_label');
     delete_option('wa_order_option_thank_you_redirect_checkout');
@@ -321,9 +360,18 @@ function wa_order_deactivation()
     delete_option('wa_order_option_custom_thank_you_include_order_date');
     delete_option('wa_order_option_custom_thank_you_order_number');
     delete_option('wa_order_option_custom_thank_you_order_number_label');
+    delete_option('wa_order_option_thank_you_order_summary_link');
+    delete_option('wa_order_option_thank_you_order_summary_label');
+    delete_option('wa_order_option_thank_you_payment_link');
+    delete_option('wa_order_option_thank_you_payment_link_label');
+    delete_option('wa_order_option_thank_you_view_order_link');
+    delete_option('wa_order_option_thank_you_view_order_label');
+    delete_option('wa_order_option_custom_thank_you_include_tax');
     delete_option('wa_order_option_custom_thank_you_open_new_tab');
     delete_option('wa_order_option_custom_thank_you_customer_details_label');
+    delete_option('wa_order_option_custom_thank_you_total_products_label');
     delete_option('wa_order_option_custom_thank_you_include_sku');
+    delete_option('wa_order_option_tax_label');
     delete_option('wa_order_option_custom_thank_you_inclue_coupon');
     delete_option('wa_order_option_custom_thank_you_coupon_label');
     delete_option('wa_order_option_enable_button_shop_loop');
@@ -333,6 +381,22 @@ function wa_order_deactivation()
     delete_option('wa_order_option_shop_loop_hide_product_url');
     delete_option('wa_order_option_shop_loop_exclude_price');
     delete_option('wa_order_option_shop_loop_open_new_tab');
+    delete_option('wa_order_floating_button_margin_top');
+    delete_option('wa_order_floating_button_margin_right');
+    delete_option('wa_order_floating_button_margin_bottom');
+    delete_option('wa_order_floating_button_margin_left');
+    delete_option('wa_order_floating_button_padding_top');
+    delete_option('wa_order_floating_button_padding_right');
+    delete_option('wa_order_floating_button_padding_bottom');
+    delete_option('wa_order_floating_button_padding_left');
+    delete_option('wa_order_floating_button_icon_margin_top');
+    delete_option('wa_order_floating_button_icon_margin_right');
+    delete_option('wa_order_floating_button_icon_margin_bottom');
+    delete_option('wa_order_floating_button_icon_margin_left');
+    delete_option('wa_order_floating_button_icon_padding_top');
+    delete_option('wa_order_floating_button_icon_padding_right');
+    delete_option('wa_order_floating_button_icon_padding_bottom');
+    delete_option('wa_order_floating_button_icon_padding_left');
 }
 register_deactivation_hook(__FILE__, 'wa_order_deactivation');
 // Begin Building the Admin Tabs
@@ -340,43 +404,183 @@ function wa_order_create_admin_page()
 {
     // Define the valid tabs
     $valid_tabs = [
-        'button_config', 'floating_button', 'display_option',
-        'shop_page', 'cart_button', 'thanks_page',
-        'gdpr_notice', 'generate_shortcode', 'tutorial_support', 'welcome'
+        'button_config',
+        'floating_button',
+        'display_option',
+        'shop_page',
+        'cart_button',
+        'thanks_page',
+        'gdpr_notice',
+        'generate_shortcode',
+        'tutorial_support',
+        'welcome'
     ];
     // Sanitize and validate the 'tab' parameter
-    $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'welcome';
+    $active_tab = isset($_GET['tab']) ? wp_unslash($_GET['tab']) : 'welcome';
     if (!in_array($active_tab, $valid_tabs)) {
         $active_tab = 'welcome'; // default to the 'welcome' tab
     }
 ?>
     <div class="wrap OCWAORDER_pluginpage_title">
-        <h1><?php _e('OneClick Chat to Order', 'oneclick-wa-order'); ?></h1>
+        <h1><?php esc_html_e('OneClick Chat to Order', 'oneclick-wa-order'); ?></h1>
         <hr>
         <h2 class="nav-tab-wrapper">
-            <a href="?page=wa-order&tab=welcome" class="nav-tab <?php echo esc_attr($active_tab == 'welcome') ? 'nav-tab-active' : ''; ?>"><?php _e('Welcome', 'oneclick-wa-order'); ?></a>
-            <a href="edit.php?post_type=wa-order-numbers" class="nav-tab <?php echo esc_attr($active_tab == 'phone-numbers') ? 'nav-tab-active' : ''; ?>"><?php _e('Numbers', 'oneclick-wa-order'); ?></a>
-            <a href="?page=wa-order&tab=button_config" class="nav-tab <?php echo esc_attr($active_tab == 'button_config') ? 'nav-tab-active' : ''; ?>"><?php _e('Basic', 'oneclick-wa-order'); ?></a>
-            <a href="?page=wa-order&tab=floating_button" class="nav-tab <?php echo esc_attr($active_tab == 'floating_button') ? 'nav-tab-active' : ''; ?>"><?php _e('Floating', 'oneclick-wa-order'); ?></a>
-            <a href="?page=wa-order&tab=display_option" class="nav-tab <?php echo esc_attr($active_tab == 'display_option') ? 'nav-tab-active' : ''; ?>"><?php _e('Display Options', 'oneclick-wa-order'); ?></a>
-            <a href="?page=wa-order&tab=shop_page" class="nav-tab <?php echo esc_attr($active_tab == 'shop_page') ? 'nav-tab-active' : ''; ?>"><?php _e('Shop', 'oneclick-wa-order'); ?></a>
-            <a href="?page=wa-order&tab=cart_button" class="nav-tab <?php echo esc_attr($active_tab == 'cart_button') ? 'nav-tab-active' : ''; ?>"><?php _e('Cart', 'oneclick-wa-order'); ?></a>
-            <a href="?page=wa-order&tab=thanks_page" class="nav-tab <?php echo esc_attr($active_tab == 'thanks_page') ? 'nav-tab-active' : ''; ?>"><?php _e('Checkout', 'oneclick-wa-order'); ?></a>
-            <a href="?page=wa-order&tab=gdpr_notice" class="nav-tab <?php echo esc_attr($active_tab == 'gdpr_notice') ? 'nav-tab-active' : ''; ?>"><?php _e('GDPR', 'oneclick-wa-order'); ?></a>
-            <a href="?page=wa-order&tab=generate_shortcode" class="nav-tab <?php echo esc_attr($active_tab == 'generate_shortcode') ? 'nav-tab-active' : ''; ?>"><?php _e('Shortcode', 'oneclick-wa-order'); ?></a>
-            <a href="?page=wa-order&tab=tutorial_support" class="nav-tab <?php echo esc_attr($active_tab == 'tutorial_support') ? 'nav-tab-active' : ''; ?>"><?php _e('Support', 'oneclick-wa-order'); ?></a>
+            <a href="?page=wa-order&tab=welcome" class="nav-tab <?php echo esc_attr($active_tab == 'welcome') ? 'nav-tab-active' : ''; ?>"><?php esc_html_e('Welcome', 'oneclick-wa-order'); ?></a>
+            <a href="edit.php?post_type=wa-order-numbers" class="nav-tab <?php echo esc_attr($active_tab == 'phone-numbers') ? 'nav-tab-active' : ''; ?>"><?php esc_html_e('Numbers', 'oneclick-wa-order'); ?></a>
+            <a href="?page=wa-order&tab=button_config" class="nav-tab <?php echo esc_attr($active_tab == 'button_config') ? 'nav-tab-active' : ''; ?>"><?php esc_html_e('Basic', 'oneclick-wa-order'); ?></a>
+            <a href="?page=wa-order&tab=shop_page" class="nav-tab <?php echo esc_attr($active_tab == 'shop_page') ? 'nav-tab-active' : ''; ?>"><?php esc_html_e('Shop', 'oneclick-wa-order'); ?></a>
+            <a href="?page=wa-order&tab=cart_button" class="nav-tab <?php echo esc_attr($active_tab == 'cart_button') ? 'nav-tab-active' : ''; ?>"><?php esc_html_e('Cart', 'oneclick-wa-order'); ?></a>
+            <a href="?page=wa-order&tab=thanks_page" class="nav-tab <?php echo esc_attr($active_tab == 'thanks_page') ? 'nav-tab-active' : ''; ?>"><?php esc_html_e('Checkout', 'oneclick-wa-order'); ?></a>
+            <a href="?page=wa-order&tab=floating_button" class="nav-tab <?php echo esc_attr($active_tab == 'floating_button') ? 'nav-tab-active' : ''; ?>"><?php esc_html_e('Floating', 'oneclick-wa-order'); ?></a>
+            <a href="?page=wa-order&tab=display_option" class="nav-tab <?php echo esc_attr($active_tab == 'display_option') ? 'nav-tab-active' : ''; ?>"><?php esc_html_e('Display', 'oneclick-wa-order'); ?></a>
+            <a href="?page=wa-order&tab=gdpr_notice" class="nav-tab <?php echo esc_attr($active_tab == 'gdpr_notice') ? 'nav-tab-active' : ''; ?>"><?php esc_html_e('GDPR', 'oneclick-wa-order'); ?></a>
+            <a href="?page=wa-order&tab=generate_shortcode" class="nav-tab <?php echo esc_attr($active_tab == 'generate_shortcode') ? 'nav-tab-active' : ''; ?>"><?php esc_html_e('Shortcode', 'oneclick-wa-order'); ?></a>
+            <a href="?page=wa-order&tab=tutorial_support" class="nav-tab <?php echo esc_attr($active_tab == 'tutorial_support') ? 'nav-tab-active' : ''; ?>"><?php esc_html_e('Support', 'oneclick-wa-order'); ?></a>
         </h2>
         <?php if ($active_tab == 'generate_shortcode') { ?>
             <?php wp_enqueue_script('wa_order_js_admin'); ?>
-            <h2 class="section_wa_order"><?php _e('Generate Shortcode', 'oneclick-wa-order'); ?></h2>
+            <h2 class="section_wa_order"><?php esc_html_e('Generate Shortcode', 'oneclick-wa-order'); ?></h2>
             <p>
-                <?php _e('Use shortcode to display OneClick Chat to Order\'s WhatsApp button anywhere on your site. There are two options; global and dynamic, which can be used based on your needs.', 'oneclick-wa-order'); ?>
+                <?php esc_html_e('Use shortcode to display OneClick Chat to Order\'s WhatsApp button anywhere on your site. There are three options; single product, global and dynamic.', 'oneclick-wa-order'); ?>
+                <br />
+            </p>
+
+            <hr />
+            <h3 class="section_wa_order"><?php esc_html_e('Single Product Shortcode Generator', 'oneclick-wa-order'); ?></h3>
+            <p>
+                <?php esc_html_e('Create a dynamic shortcode for a single product page. Note: This shortcode will only work for single products.', 'oneclick-wa-order'); ?>
+                <br />
+                <?php echo esc_html__('All other options will be pulled from the Single Product Page settings under the ', 'oneclick-wa-order') . ' <a href="admin.php?page=wa-order&tab=button_config"><b>' . esc_html__('Basic', 'oneclick-wa-order') . '</b></a> tab.'; ?>
                 <br />
             </p>
             <hr />
-            <h3 class="section_wa_order"><?php _e('Shortcode Generator', 'oneclick-wa-order'); ?></h3>
+            <!-- Single Product Shortcode Generator -->
+            <form>
+                <table class="form-table">
+                    <tbody>
+                        <!-- Dropdown WA Number -->
+                        <tr>
+                            <th scope="row">
+                                <label><?php echo esc_html_e('WhatsApp Number', 'oneclick-wa-order'); ?></label>
+                            </th>
+                            <td>
+                                <?php wa_order_phone_numbers_dropdown_shortcode_generator(
+                                    array(
+                                        'name'      => 'wa_order_phone_numbers_dropdown_shortcode_generator',
+                                        'selected'  => esc_attr(get_option('wa_order_selected_wa_number_shortcode')),
+                                    )
+                                ); ?>
+                                <p class="description">
+                                    <?php
+                                    /* translators: 1. opening <strong> tag with inline red color style for "required", 2. closing </strong> tag, 3. opening <a> tag for "Numbers", 4. closing </a> tag */
+                                    echo wp_kses(
+                                        sprintf(
+                                            /* translators: 1. opening <strong> tag with inline red color style for "required", 2. closing </strong> tag, 3. opening <a> tag for "Numbers", 4. closing </a> tag */
+                                            __('WhatsApp number is %1$srequired%2$s. Please set it on the %3$sNumbers%4$s tab.', 'oneclick-wa-order'),
+                                            '<strong style="color:red;">', // opening <strong> tag with red color style
+                                            '</strong>', // closing <strong> tag
+                                            '<a href="edit.php?post_type=wa-order-numbers"><strong>', // opening <a> and <strong> tag
+                                            '</strong></a>' // closing <a> and <strong> tag
+                                        ),
+                                        array(
+                                            'strong' => array('style' => array()), // Allow strong with style attribute
+                                            'a' => array('href' => array(), 'target' => array()) // Allow a tag with href and target attributes
+                                        )
+                                    );
+                                    ?>
+                                </p>
+                            </td>
+                        </tr>
+                        <!-- For Which Product? -->
+                        <tr class="wa_order_message">
+                            <th scope="row">
+                                <label for="SingleWAWhichPage"><?php echo esc_html__('For Which Product?', 'oneclick-wa-order'); ?></label>
+                            </th>
+                            <td>
+                                <select name="SingleWAWhichPage" id="SingleWAWhichPage" onChange="generateSingleWAshortcode();" class="wa_order-admin-select2 regular-text">
+                                    <option value="current"><?php echo esc_html__('Current Product', 'oneclick-wa-order'); ?></option>
+                                    <option value="product_id"><?php echo esc_html__('Product by ID', 'oneclick-wa-order'); ?></option>
+                                </select>
+                                <p class="description">
+                                    - <?php echo esc_html__('If you choose ', 'oneclick-wa-order') . ' <b>' . esc_html__('Current Product', 'oneclick-wa-order') . '</b>' . esc_html__(', the shortcode will automatically pull in the product details where you place the shortcode.', 'oneclick-wa-order'); ?>
+                                    <br>
+                                    - <?php echo esc_html__('On the other hand, if you choose ', 'oneclick-wa-order') . ' <b>' . esc_html__('Product by ID', 'oneclick-wa-order') . '</b>' . esc_html__(', just enter a  product ID and it\'ll pull in the details for that product instead.', 'oneclick-wa-order'); ?>
+                                </p>
+                            </td>
+                        </tr>
+                        <!-- Product by ID -->
+                        <tr class="wa_order_message">
+                            <th scope="row">
+                                <label for="SingleWAProductID"><?php echo esc_html__('Product ID', 'oneclick-wa-order'); ?></label>
+                            </th>
+                            <td>
+                                <input type="number" id="SingleWAProductID" name="SingleWAProductID" onChange="generateSingleWAshortcode();" class="wa_order_input" placeholder="<?php echo esc_attr__('e.g. 23', 'oneclick-wa-order'); ?>">
+                                <p class="description">
+                                    <?php echo esc_html__('Insert a valid ', 'oneclick-wa-order') . ' <b>' . esc_html__('Product ID', 'oneclick-wa-order') . '</b>' . esc_html__('. Ensure it\'s available and published.', 'oneclick-wa-order'); ?>
+                                    <br>
+                                </p>
+                            </td>
+                        </tr>
+                        <!-- Text on Button -->
+                        <tr class="wa_order_btn_text">
+                            <th scope="row">
+                                <label class="wa_order_btn_txt_label" for="SingleWAbuttonText"><b><?php echo esc_html__('Text on Button', 'oneclick-wa-order'); ?></b></label>
+                            </th>
+                            <td>
+                                <input type="text" id="SingleWAbuttonText" name="SingleWAbuttonText" onChange="generateSingleWAshortcode();" class="wa_order_input" placeholder="<?php echo esc_attr__('e.g. Order via WhatsApp', 'oneclick-wa-order'); ?>">
+                                <p class="description">
+                                    <?php echo esc_html__('Enter button text, e.g.', 'oneclick-wa-order') . ' <code>' . esc_html__('Order via WhatsApp', 'oneclick-wa-order') . '</code>'; ?>
+                                    <br>
+                                    <?php echo esc_html__('If empty, first the shortcode will use the single product\'s button text value, then the global single product text on button.', 'oneclick-wa-order'); ?>
+                                </p>
+                            </td>
+                        </tr>
+                        <!-- Custom Message -->
+                        <tr class="wa_order_message">
+                            <th scope="row">
+                                <label class="wa_order_message_label" for="SingleWAcustomMessage"><b><?php echo esc_html__('Custom Message', 'oneclick-wa-order'); ?></b></label>
+                            </th>
+                            <td>
+                                <textarea class="wa_order_input_areatext" rows="5" placeholder="<?php echo esc_attr__('e.g. Hello, I need to know more about', 'oneclick-wa-order'); ?>" id="SingleWAcustomMessage" name="SingleWAcustomMessage" onChange="generateSingleWAshortcode();"></textarea>
+                                <p class="description">
+                                    <?php echo esc_html__('Enter custom message, e.g.', 'oneclick-wa-order') . ' <code>' . esc_html__('Hello, I need to know more about', 'oneclick-wa-order') . '</code>'; ?>
+                                    <br>
+                                    <?php echo esc_html__('If empty, first the shortcode will use the single product\'s custom message, then the global single product message.', 'oneclick-wa-order'); ?>
+                                </p>
+                            </td>
+                        </tr>
+                        <!-- Force Fullwidth? -->
+                        <tr class="wa_order_message">
+                            <th scope="row">
+                                <label for="SingleWAFullwidth"><?php echo esc_html__('Force Fullwidth?', 'oneclick-wa-order'); ?></label>
+                            </th>
+                            <td>
+                                <select name="SingleWAFullwidth" id="SingleWAFullwidth" onChange="generateSingleWAshortcode();" class="wa_order-admin-select2 regular-text">
+                                    <option value="false"><?php echo esc_html__('No', 'oneclick-wa-order'); ?></option>
+                                    <option value="true"><?php echo esc_html__('Yes', 'oneclick-wa-order'); ?></option>
+                                </select>
+                            </td>
+                        </tr>
+                        <!-- Copy Shortcode -->
+                        <tr class="wa_order_message">
+                            <th scope="row">
+                                <label class="wa_order_message_label" for="generatedSingleWAShortcode"><b><?php echo esc_html__('Copy Shortcode', 'oneclick-wa-order'); ?></b></label>
+                            </th>
+                            <td>
+                                <textarea class="wa_order_input_areatext" rows="5" id="generatedSingleWAShortcode" onclick="this.setSelectionRange(0, this.value.length)"></textarea>
+                                <p class="description">
+                                    <?php echo esc_html__('Copy above shortcode and paste it anywhere.', 'oneclick-wa-order'); ?></p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </form>
+            <hr />
+            <!-- End - Single Product Shortcode Generator -->
+
+            <h3 class="section_wa_order"><?php esc_html_e('General Shortcode Generator', 'oneclick-wa-order'); ?></h3>
             <p>
-                <?php _e('Create a dynamic shortcode using below generator.', 'oneclick-wa-order'); ?>
+                <?php esc_html_e('Create a general purpose shortcode using the following generator.', 'oneclick-wa-order'); ?>
                 <br />
             </p>
             <hr />
@@ -387,7 +591,7 @@ function wa_order_create_admin_page()
                         <!-- Dropdown WA Number -->
                         <tr>
                             <th scope="row">
-                                <label><?php echo esc_html__('WhatsApp Number', 'oneclick-wa-order'); ?></label>
+                                <label><?php echo esc_html_e('WhatsApp Number', 'oneclick-wa-order'); ?></label>
                             </th>
                             <td>
                                 <?php wa_order_phone_numbers_dropdown_shortcode_generator(
@@ -397,7 +601,23 @@ function wa_order_create_admin_page()
                                     )
                                 ); ?>
                                 <p class="description">
-                                    <?php echo esc_html__('WhatsApp number is required. Please set it on', 'oneclick-wa-order') . ' <a href="edit.php?post_type=wa-order-numbers"><strong>' . esc_html__('Numbers', 'oneclick-wa-order') . '</strong></a> ' . esc_html__('tab.', 'oneclick-wa-order'); ?>
+                                    <?php
+                                    /* translators: 1. opening <strong> tag with inline red color style for "required", 2. closing </strong> tag, 3. opening <a> tag for "Numbers", 4. closing </a> tag */
+                                    echo wp_kses(
+                                        sprintf(
+                                            /* translators: 1. opening <strong> tag with inline red color style for "required", 2. closing </strong> tag, 3. opening <a> tag for "Numbers", 4. closing </a> tag */
+                                            __('WhatsApp number is %1$srequired%2$s. Please set it on the %3$sNumbers%4$s tab.', 'oneclick-wa-order'),
+                                            '<strong style="color:red;">', // opening <strong> tag with red color style
+                                            '</strong>', // closing <strong> tag
+                                            '<a href="edit.php?post_type=wa-order-numbers"><strong>', // opening <a> and <strong> tag
+                                            '</strong></a>' // closing <a> and <strong> tag
+                                        ),
+                                        array(
+                                            'strong' => array('style' => array()), // Allow strong with style attribute
+                                            'a' => array('href' => array(), 'target' => array()) // Allow a tag with href and target attributes
+                                        )
+                                    );
+                                    ?>
                                 </p>
                             </td>
                         </tr>
@@ -474,7 +694,23 @@ function wa_order_create_admin_page()
                                     )
                                 ); ?>
                                 <p class="description">
-                                    <?php echo esc_html__('WhatsApp number is required. Please set it on', 'oneclick-wa-order') . ' <a href="edit.php?post_type=wa-order-numbers"><strong>' . esc_html__('Numbers', 'oneclick-wa-order') . '</strong></a> ' . esc_html__('tab.', 'oneclick-wa-order'); ?>
+                                    <?php
+                                    /* translators: 1. opening <strong> tag with inline red color style for "required", 2. closing </strong> tag, 3. opening <a> tag for "Numbers", 4. closing </a> tag */
+                                    echo wp_kses(
+                                        sprintf(
+                                            /* translators: 1. opening <strong> tag with inline red color style for "required", 2. closing </strong> tag, 3. opening <a> tag for "Numbers", 4. closing </a> tag */
+                                            __('WhatsApp number is %1$srequired%2$s. Please set it on the %3$sNumbers%4$s tab.', 'oneclick-wa-order'),
+                                            '<strong style="color:red;">', // opening <strong> tag with red color style
+                                            '</strong>', // closing <strong> tag
+                                            '<a href="edit.php?post_type=wa-order-numbers"><strong>', // opening <a> and <strong> tag
+                                            '</strong></a>' // closing <a> and <strong> tag
+                                        ),
+                                        array(
+                                            'strong' => array('style' => array()), // Allow strong with style attribute
+                                            'a' => array('href' => array(), 'target' => array()) // Allow a tag with href and target attributes
+                                        )
+                                    );
+                                    ?>
                                 </p>
                             </td>
                         </tr>
@@ -531,68 +767,109 @@ function wa_order_create_admin_page()
                 <?php settings_fields('wa-order-settings-group-button-config'); ?>
                 <?php do_settings_sections('wa-order-settings-group-button-config'); ?>
                 <!-- Basic Configuration tab -->
-                <h2 class="section_wa_order"><?php _e('Confirmation', 'oneclick-wa-order'); ?></h2>
+                <h2 class="section_wa_order"><?php esc_html_e('Confirmation', 'oneclick-wa-order'); ?></h2>
                 <p>
-                    <?php _e('Make sure that you have added at least one WhatsApp number to dismiss the admin notice. Please <a href="edit.php?post_type=wa-order-numbers"><strong>set it here</strong></a> to get started. <a href="https://walterpinem.me/projects/oneclick-chat-to-order-mutiple-numbers-feature/?utm_source=admin-notice&utm_medium=admin-dashboard&utm_campaign=OneClick-Chat-to-Order" target="_blank"><strong>Learn more</strong></a>.', 'oneclick-wa-order'); ?>
+                    <?php
+                    /* translators: 1. opening <a> tag with strong tag for "set it here", 2. closing </a> tag, 3. opening <a> tag with strong tag for "Learn more", 4. closing </a> tag. */
+                    echo sprintf(
+                        /* translators: 1: "set it here" link, 2: "Learn more" link */
+                        esc_html__('Make sure that you have added at least one WhatsApp number to dismiss the admin notice. Please %1$sset it here%2$s to get started. %3$sLearn more%4$s.', 'oneclick-wa-order'),
+                        '<a href="edit.php?post_type=wa-order-numbers"><strong>',
+                        '</strong></a>',
+                        '<a href="https://walterpinem.me/projects/oneclick-chat-to-order-mutiple-numbers-feature/?utm_source=admin-notice&utm_medium=admin-dashboard&utm_campaign=OneClick-Chat-to-Order" target="_blank"><strong>',
+                        '</strong></a>'
+                    );
+                    ?>
                     <br />
                 </p>
                 <table class="form-table">
                     <tbody>
                         <tr class="wa_order_target">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Dismiss Notice', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Dismiss Notice', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_dismiss_notice_confirmation" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_dismiss_notice_confirmation'), 'yes'); ?>>
-                                <?php _e('Check this if you have added at least one WhatsApp number.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('Check this if you have added at least one WhatsApp number.', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <hr>
-                <?php /** Removed in 1.0.5 version
-                <h2 class="section_wa_order"><?php _e('WhatsApp Base URL', 'oneclick-wa-order'); ?></h2>
+                <?php /** Re-activated in version 1.0.7. */ ?>
+                <h2 class="section_wa_order"><?php esc_html_e('WhatsApp Base URL', 'oneclick-wa-order'); ?></h2>
                 <p class="description">
-                    <?php _e('Just in case, if the WhatsApp link cannot be opened in a mobile device, you can choose <code>api</code> instead of <code>web</code> for desktop (default is <code>web</code> for desktop and <code>api</code> for mobile).', 'oneclick-wa-order'); ?>
+                    <?php esc_html_e('If you or your customers are having trouble opening the WhatsApp link on a mobile device or desktop, don\'t worry - you can simply configure the base URL for each device type here.', 'oneclick-wa-order'); ?>
                 </p>
                 <hr>
                 <table class="form-table">
                     <tbody>
                         <tr class="wa_order_target">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn">
-                                    <strong><?php _e('Choose Base URL', 'oneclick-wa-order'); ?></strong>
+                                <label class="wa_order_remove_btn_label" for="wa_order_whatsapp_base_url">
+                                    <strong><?php esc_html_e('Base URL for Mobile', 'oneclick-wa-order'); ?></strong>
                                 </label>
                             </th>
                             <td>
                                 <select name="wa_order_whatsapp_base_url" id="wa_order_whatsapp_base_url" class="wa_order-admin-select2">
-                                    <option value="web" <?php selected(get_option('wa_order_whatsapp_base_url'), 'web'); ?>><?php _e('web (default)', 'oneclick-wa-order'); ?></option>
-                                    <option value="api" <?php selected(get_option('wa_order_whatsapp_base_url'), 'api'); ?>><?php _e('api', 'oneclick-wa-order'); ?></option>
+                                    <option value="api" <?php selected(get_option('wa_order_whatsapp_base_url'), 'api'); ?>><?php esc_html_e('api - api.whatsapp.com (default)', 'oneclick-wa-order'); ?></option>
+                                    <option value="protocol" <?php selected(get_option('wa_order_whatsapp_base_url'), 'protocol'); ?>><?php esc_html_e('protocol - whatsapp://send', 'oneclick-wa-order'); ?></option>
                                 </select>
                                 <p class="description">
-                                    <?php _e('It\'s only applicable for desktop.', 'oneclick-wa-order'); ?>
+                                    - <code><?php esc_html_e('whatsapp://send', 'oneclick-wa-order'); ?></code> <?php esc_html_e('is ideal for mobile devices with WhatsApp already installed, offering a faster and more direct experience by bypassing the browser.', 'oneclick-wa-order'); ?>
+                                    <br>
+                                </p>
+                                <p class="description">
+                                    - <code><?php esc_html_e('api.whatsapp.com', 'oneclick-wa-order'); ?></code> <?php esc_html_e('is good for a universal experience that works across mobile device environments, but might involve some extra steps on mobile browsers.', 'oneclick-wa-order'); ?>
                                 </p>
                                 <br>
                             </td>
-                        <tr>
+                        </tr>
+                        <!-- For Desktop -->
+                        <tr class="wa_order_target">
+                            <th scope="row">
+                                <label class="wa_order_remove_btn_label" for="wa_order_whatsapp_base_url_desktop">
+                                    <strong><?php esc_html_e('Base URL for Desktop', 'oneclick-wa-order'); ?></strong>
+                                </label>
+                            </th>
+                            <td>
+                                <select name="wa_order_whatsapp_base_url_desktop" id="wa_order_whatsapp_base_url_desktop" class="wa_order-admin-select2">
+                                    <option value="web" <?php selected(get_option('wa_order_whatsapp_base_url_desktop'), 'web'); ?>><?php esc_html_e('web - web.whatsapp.com (default)', 'oneclick-wa-order'); ?></option>
+                                    <option value="api" <?php selected(get_option('wa_order_whatsapp_base_url_desktop'), 'api'); ?>><?php esc_html_e('api - api.whatsapp.com', 'oneclick-wa-order'); ?></option>
+                                    <option value="protocol" <?php selected(get_option('wa_order_whatsapp_base_url_desktop'), 'protocol'); ?>><?php esc_html_e('protocol - whatsapp://send', 'oneclick-wa-order'); ?></option>
+                                </select>
+                                <p class="description">
+                                    - <?php esc_html_e('Using', 'oneclick-wa-order'); ?> <code><?php esc_html_e('api', 'oneclick-wa-order'); ?></code> <?php esc_html_e('as the base URL, the customers will be prompted to open WhatsApp desktop app if installed.', 'oneclick-wa-order'); ?>
+                                    <br>
+                                </p>
+                                <p class="description">
+                                    - <?php esc_html_e('Whereas using', 'oneclick-wa-order'); ?> <code><?php esc_html_e('web', 'oneclick-wa-order'); ?></code> <?php esc_html_e('as the base URL, the customers will be immediately redirected to the WhatsApp web on the browser.', 'oneclick-wa-order'); ?>
+                                    <br>
+                                </p>
+                                <p class="description">
+                                    - <?php esc_html_e('Using the protocol', 'oneclick-wa-order'); ?> <code><?php esc_html_e('whatsapp://send', 'oneclick-wa-order'); ?></code> <?php esc_html_e('will immediately prompt the customers to open the WhatsApp desktop app, bypassing the browser interaction.', 'oneclick-wa-order'); ?>
+                                    <br>
+                                </p>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
-                <hr>  */ ?>
+                <hr>
                 <table class="form-table">
                     <tbody>
-                        <h2 class="section_wa_order"><?php _e('Single Product Page', 'oneclick-wa-order'); ?></h2>
+                        <h2 class="section_wa_order"><?php esc_html_e('Single Product Page', 'oneclick-wa-order'); ?></h2>
                         <p>
-                            <?php _e('These configurations will be only effective on single product page.', 'oneclick-wa-order'); ?>
+                            <?php esc_html_e('These configurations will be only effective on single product page.', 'oneclick-wa-order'); ?>
                             <br />
                         </p>
                         <tr class="wa_order_target">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Display Button?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Display Button?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_enable_single_product" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_enable_single_product'), 'yes'); ?>>
-                                <?php _e('This will display WhatsApp button on single product page', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will display WhatsApp button on single product page', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
@@ -600,7 +877,7 @@ function wa_order_create_admin_page()
                         <tr>
                             <th scope="row">
                                 <label>
-                                    <?php _e('WhatsApp Number', 'oneclick-wa-order') ?>
+                                    <?php esc_html_e('WhatsApp Number', 'oneclick-wa-order') ?>
                                 </label>
                             </th>
                             <td>
@@ -612,7 +889,24 @@ function wa_order_create_admin_page()
                                 )
                                 ?>
                                 <p class="description">
-                                    <?php _e('WhatsApp number is <strong style="color:red;">required</strong>. Please set it on <a href="edit.php?post_type=wa-order-numbers"><strong>Numbers</strong></a> tab.', 'oneclick-wa-order'); ?>
+                                    <?php
+                                    /* translators: 1. opening <strong> tag with inline red color style for "required", 2. closing </strong> tag, 3. opening <a> tag for "Numbers", 4. closing </a> tag */
+                                    echo wp_kses(
+                                        sprintf(
+                                            /* translators: 1. opening <strong> tag with inline red color style for "required", 2. closing </strong> tag, 3. opening <a> tag for "Numbers", 4. closing </a> tag */
+                                            __('WhatsApp number is %1$srequired%2$s. Please set it on the %3$sNumbers%4$s tab.', 'oneclick-wa-order'),
+                                            '<strong style="color:red;">', // opening <strong> tag with red color style
+                                            '</strong>', // closing <strong> tag
+                                            '<a href="edit.php?post_type=wa-order-numbers"><strong>', // opening <a> and <strong> tag
+                                            '</strong></a>' // closing <a> and <strong> tag
+                                        ),
+                                        array(
+                                            'strong' => array('style' => array()), // Allow strong with style attribute
+                                            'a' => array('href' => array(), 'target' => array()) // Allow a tag with href and target attributes
+                                        )
+                                    );
+                                    ?>
+
                                 </p>
                             </td>
                         </tr>
@@ -620,46 +914,81 @@ function wa_order_create_admin_page()
                         <!-- Dropdown Button Position -->
                         <tr>
                             <th scope="row">
-                                <label for="wa_order_single_product_button_position"><?php echo __('Button Position', 'oneclick-wa-order') ?></label>
+                                <label for="wa_order_single_product_button_position"><?php echo esc_html_e('Button Position', 'oneclick-wa-order') ?></label>
                             </th>
                             <td>
                                 <select name="wa_order_single_product_button_position" id="wa_order_single_product_button_position" class="wa_order-admin-select2">
-                                    <option value="after_atc" <?php selected(get_option('wa_order_single_product_button_position'), 'after_atc'); ?>><?php _e('After Add to Cart Button (Default)', 'oneclick-wa-order'); ?></option>
-                                    <option value="under_atc" <?php selected(get_option('wa_order_single_product_button_position'), 'under_atc'); ?>><?php _e('Under Add to Cart Button', 'oneclick-wa-order'); ?></option>
-                                    <option value="after_shortdesc" <?php selected(get_option('wa_order_single_product_button_position'), 'after_shortdesc'); ?>><?php _e('After Short Description', 'oneclick-wa-order'); ?></option>
+                                    <option value="after_atc" <?php selected(get_option('wa_order_single_product_button_position'), 'after_atc'); ?>><?php esc_html_e('After Add to Cart Button (Default)', 'oneclick-wa-order'); ?></option>
+                                    <option value="under_atc" <?php selected(get_option('wa_order_single_product_button_position'), 'under_atc'); ?>><?php esc_html_e('Under Add to Cart Button', 'oneclick-wa-order'); ?></option>
+                                    <option value="after_shortdesc" <?php selected(get_option('wa_order_single_product_button_position'), 'after_shortdesc'); ?>><?php esc_html_e('After Short Description', 'oneclick-wa-order'); ?></option>
+                                    <option value="after_single_product_summary" <?php selected(get_option('wa_order_single_product_button_position'), 'after_single_product_summary'); ?>><?php esc_html_e('After Single Product Summary', 'oneclick-wa-order'); ?></option>
+                                    <option value="around_share_area" <?php selected(get_option('wa_order_single_product_button_position'), 'around_share_area'); ?>><?php esc_html_e('Around Product Share Area', 'oneclick-wa-order'); ?></option>
                                 </select>
                                 <p class="description">
-                                    <?php _e('Choose where to put the WhatsApp button on single product page.', 'oneclick-wa-order'); ?>
+                                    <?php esc_html_e('Choose where to put the WhatsApp button on single product page.', 'oneclick-wa-order'); ?>
                                 </p>
                             </td>
                         </tr>
                         <!-- END - Dropdown Button Position -->
-                        <tr class="wa_order_message">
+
+                        <!-- Force Full-Width -->
+                        <tr class="wa_order_price" id="force_fullwidth_container">
                             <th scope="row">
-                                <label class="wa_order_message_label" for="message_owo"><b><?php _e('Custom Message', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_price_label" for="wa_order_price"><b><?php esc_html_e('Force Full-Width?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
-                                <textarea name="wa_order_option_message" class="wa_order_input_areatext" rows="5" placeholder="<?php _e('e.g. Hello, I want to buy:', 'oneclick-wa-order'); ?>"><?php echo esc_textarea(get_option('wa_order_option_message')); ?></textarea>
+                                <input type="checkbox" name="wa_order_single_force_fullwidth" id="wa_order_single_force_fullwidth" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_single_force_fullwidth'), 'yes'); ?>>
+                                <?php esc_html_e('Yes, force the button to be full width.', 'oneclick-wa-order'); ?>
+                                <br>
+                            </td>
+                        </tr>
+                        <!-- END - Force Full-Width -->
+
+                        <tr class="wa_order_message">
+                            <th scope="row">
+                                <label class="wa_order_message_label" for="message_owo"><b><?php esc_html_e('Custom Message', 'oneclick-wa-order'); ?></b></label>
+                            </th>
+                            <td>
+                                <textarea name="wa_order_option_message" class="wa_order_input_areatext" rows="5" placeholder="<?php esc_html_e('e.g. Hello, I want to buy:', 'oneclick-wa-order'); ?>"><?php echo esc_textarea(get_option('wa_order_option_message')); ?></textarea>
                                 <p class="description">
-                                    <?php _e('Fill this form with custom message, e.g. <code>Hello, I want to buy:</code>', 'oneclick-wa-order'); ?>
+                                    <?php
+                                    /* translators: 1. example custom message wrapped in <code> tag */
+                                    echo sprintf(
+                                        /* translators: 1. example custom message wrapped in <code> tag */
+                                        esc_html__('Fill this form with a custom message, e.g. %1$sHello, I want to buy:%2$s', 'oneclick-wa-order'),
+                                        '<code>', // opening <code> tag
+                                        '</code>' // closing <code> tag
+                                    );
+                                    ?>
                                 </p>
                             </td>
                         </tr>
                         <tr class="wa_order_btn_text">
                             <th scope="row">
-                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php _e('Text on Button', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php esc_html_e('Text on Button', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
-                                <input type="text" name="wa_order_option_text_button" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_text_button')); ?>" placeholder="<?php _e('e.g. Order via WhatsApp', 'oneclick-wa-order'); ?>">
+                                <input type="text" name="wa_order_option_text_button" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_text_button')); ?>" placeholder="<?php esc_html_e('e.g. Order via WhatsApp', 'oneclick-wa-order'); ?>">
+                            </td>
+                        </tr>
+                        <!-- Show Regular & Sale Price -->
+                        <tr class="wa_order_target">
+                            <th scope="row">
+                                <label class="wa_order_target_label" for="wa_order_option_single_show_regular_sale_prices"><b><?php esc_html_e('Show Regular & Sale Prices?', 'oneclick-wa-order'); ?></b></label>
+                            </th>
+                            <td>
+                                <input type="checkbox" name="wa_order_option_single_show_regular_sale_prices" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_single_show_regular_sale_prices'), 'yes'); ?>>
+                                <?php esc_html_e('Check to show both regular and sale prices in the WhatsApp message.', 'oneclick-wa-order'); ?>
+                                <br>
                             </td>
                         </tr>
                         <tr class="wa_order_target">
                             <th scope="row">
-                                <label class="wa_order_target_label" for="wa_order_target"><b><?php _e('Open in New Tab?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_target_label" for="wa_order_target"><b><?php esc_html_e('Open in New Tab?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_target" class="wa_order_input_check" value="_blank" <?php checked(get_option('wa_order_option_target'), '_blank'); ?>>
-                                <?php _e('Yes, Open in New Tab', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('Yes, Open in New Tab', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
@@ -668,25 +997,37 @@ function wa_order_create_admin_page()
                 <hr>
                 <table class="form-table">
                     <tbody>
-                        <h2 class="section_wa_order"><?php _e('Exclusion', 'oneclick-wa-order'); ?></h2>
-                        <p><?php _e('The following option is only for the output message you\'ll receieve on WhatsApp. To hide some elements, please go to <a href="admin.php?page=wa-order&tab=display_option"><strong>Display Options</strong></a> tab.', 'oneclick-wa-order'); ?></p>
+                        <h2 class="section_wa_order"><?php esc_html_e('Exclusion', 'oneclick-wa-order'); ?></h2>
+                        <p>
+                            <?php
+                            /* translators: 1. opening <a> tag with href to "Display Options" tab, 2. closing </a> tag */
+                            echo sprintf(
+                                /* translators: 1. opening <a> tag with href to "Display Options" tab */
+                                /* translators: 2. closing </a> tag */
+                                esc_html__('The following option is only for the output message you\'ll receive on WhatsApp. To hide some elements, please go to the %1$sDisplay Options%2$s tab.', 'oneclick-wa-order'),
+                                '<a href="admin.php?page=wa-order&tab=display_option"><strong>', // opening <a> and <strong> tag
+                                '</strong></a>' // closing <a> and <strong> tag
+                            );
+                            ?>
+                        </p>
+
                         <tr class="wa_order_price">
                             <th scope="row">
-                                <label class="wa_order_price_label" for="wa_order_price"><b><?php _e('Exclude Price?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_price_label" for="wa_order_price"><b><?php esc_html_e('Exclude Price?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_exclude_price" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_exclude_price'), 'yes'); ?>>
-                                <?php _e('Yes, exclude price in WhatsApp message.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('Yes, exclude price in WhatsApp message.', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
                         <tr class="wa_order_price">
                             <th scope="row">
-                                <label class="wa_order_price_label" for="wa_order_price"><b><?php _e('Remove Product URL?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_price_label" for="wa_order_price"><b><?php esc_html_e('Remove Product URL?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_exclude_product_url" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_exclude_product_url'), 'yes'); ?>>
-                                <?php _e('This will remove product URL from WhatsApp message sent from single product page.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will remove product URL from WhatsApp message sent from single product page.', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
@@ -695,54 +1036,71 @@ function wa_order_create_admin_page()
                 <hr>
                 <table class="form-table">
                     <tbody>
-                        <h2 class="section_wa_order"><?php _e('Text Translations', 'oneclick-wa-order'); ?></h2>
-                        <p><?php _e('You can translate the following strings which will be included in the sent message. By default, the labels are used in the message. You can translate or change them below accordingly.', 'oneclick-wa-order'); ?></p>
+                        <h2 class="section_wa_order"><?php esc_html_e('Text Translations', 'oneclick-wa-order'); ?></h2>
+                        <p><?php esc_html_e('You can translate the following strings which will be included in the sent message. By default, the labels are used in the message. You can translate or change them below accordingly.', 'oneclick-wa-order'); ?></p>
                         <tr class="wa_order_btn_text">
                             <th scope="row">
-                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php _e('Quantity', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php esc_html_e('Quantity', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
-                                <input type="text" name="wa_order_option_quantity_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_quantity_label', 'Quantity')); ?>" placeholder="<?php _e('e.g. Quantity', 'oneclick-wa-order'); ?>">
+                                <input type="text" name="wa_order_option_quantity_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_quantity_label', 'Quantity')); ?>" placeholder="<?php esc_html_e('e.g. Quantity', 'oneclick-wa-order'); ?>">
                             </td>
                         </tr>
                         <tr class="wa_order_btn_text">
                             <th scope="row">
-                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php _e('Price', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php esc_html_e('Price', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
-                                <input type="text" name="wa_order_option_price_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_price_label', 'Price')); ?>" placeholder="<?php _e('e.g. Price', 'oneclick-wa-order'); ?>">
+                                <input type="text" name="wa_order_option_price_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_price_label', 'Price')); ?>" placeholder="<?php esc_html_e('e.g. Price', 'oneclick-wa-order'); ?>">
                             </td>
                         </tr>
                         <tr class="wa_order_btn_text">
                             <th scope="row">
-                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php _e('URL', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php esc_html_e('URL', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
-                                <input type="text" name="wa_order_option_url_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_url_label', 'URL')); ?>" placeholder="<?php _e('e.g. Link', 'oneclick-wa-order'); ?>">
+                                <input type="text" name="wa_order_option_url_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_url_label', 'URL')); ?>" placeholder="<?php esc_html_e('e.g. Link', 'oneclick-wa-order'); ?>">
                             </td>
                         </tr>
                         <tr class="wa_order_btn_text">
                             <th scope="row">
-                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php _e('Total Amount', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php esc_html_e('Total Amount', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
-                                <input type="text" name="wa_order_option_total_amount_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_total_amount_label', 'Total Price')); ?>" placeholder="<?php _e('e.g. Total Amount', 'oneclick-wa-order'); ?>">
+                                <input type="text" name="wa_order_option_total_amount_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_total_amount_label', 'Total Price')); ?>" placeholder="<?php esc_html_e('e.g. Total Amount', 'oneclick-wa-order'); ?>">
                             </td>
                         </tr>
                         <tr class="wa_order_btn_text">
                             <th scope="row">
-                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php _e('Payment Method', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php esc_html_e('Total Discount', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
-                                <input type="text" name="wa_order_option_payment_method_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_payment_method_label', 'Payment Method')); ?>" placeholder="<?php _e('e.g. Payment via', 'oneclick-wa-order'); ?>">
+                                <input type="text" name="wa_order_option_total_discount_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_total_discount_label', 'Total Discount')); ?>" placeholder="<?php esc_html_e('e.g. Total Discount', 'oneclick-wa-order'); ?>">
                             </td>
                         </tr>
                         <tr class="wa_order_btn_text">
                             <th scope="row">
-                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php _e('Thank you!', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php esc_html_e('Payment Method', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
-                                <input type="text" name="wa_order_option_thank_you_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_thank_you_label', 'Thank you!')); ?>" placeholder="<?php _e('e.g. Thank you in advance!', 'oneclick-wa-order'); ?>">
+                                <input type="text" name="wa_order_option_payment_method_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_payment_method_label', 'Payment Method')); ?>" placeholder="<?php esc_html_e('e.g. Payment via', 'oneclick-wa-order'); ?>">
+                            </td>
+                        </tr>
+                        <tr class="wa_order_btn_text">
+                            <th scope="row">
+                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php esc_html_e('Thank you!', 'oneclick-wa-order'); ?></b></label>
+                            </th>
+                            <td>
+                                <input type="text" name="wa_order_option_thank_you_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_thank_you_label', 'Thank you!')); ?>" placeholder="<?php esc_html_e('e.g. Thank you in advance!', 'oneclick-wa-order'); ?>">
+                            </td>
+                        </tr>
+                        <!-- Tax Label -->
+                        <tr class="wa_order_btn_text">
+                            <th scope="row">
+                                <label for="wa_order_option_tax_label"><?php echo esc_html__('Tax Label', 'oneclick-wa-order'); ?></label>
+                            </th>
+                            <td>
+                                <input type="text" name="wa_order_option_tax_label" id="wa_order_option_tax_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_tax_label')); ?>" placeholder="<?php echo esc_attr__('e.g. Tax', 'oneclick-wa-order'); ?>">
                             </td>
                         </tr>
                     </tbody>
@@ -756,20 +1114,20 @@ function wa_order_create_admin_page()
                 <?php settings_fields('wa-order-settings-group-floating'); ?>
                 <?php do_settings_sections('wa-order-settings-group-floating'); ?>
                 <!-- Floating Button -->
-                <h2 class="section_wa_order"><?php _e('Floating Button', 'oneclick-wa-order'); ?></h2>
+                <h2 class="section_wa_order"><?php esc_html_e('Floating Button', 'oneclick-wa-order'); ?></h2>
                 <p>
-                    <?php _e('Enable / disable a floating WhatsApp button on your entire pages. You can configure the floating button below.', 'oneclick-wa-order'); ?>
+                    <?php esc_html_e('Enable / disable a floating WhatsApp button on your entire pages. You can configure the floating button below.', 'oneclick-wa-order'); ?>
                     <br />
                 </p>
                 <table class="form-table">
                     <tbody>
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Display Floating Button?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Display Floating Button?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_floating_button" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_floating_button'), 'yes'); ?>>
-                                <?php _e('This will show floating WhatsApp Button', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will show floating WhatsApp Button', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
@@ -777,7 +1135,7 @@ function wa_order_create_admin_page()
                         <tr>
                             <th scope="row">
                                 <label>
-                                    <?php _e('WhatsApp Number', 'oneclick-wa-order') ?>
+                                    <?php esc_html_e('WhatsApp Number', 'oneclick-wa-order') ?>
                                 </label>
                             </th>
                             <td>
@@ -789,48 +1147,82 @@ function wa_order_create_admin_page()
                                 )
                                 ?>
                                 <p class="description">
-                                    <?php _e('WhatsApp number is <strong style="color:red;">required</strong>. Please set it on <a href="edit.php?post_type=wa-order-numbers"><strong>Numbers</strong></a> tab.', 'oneclick-wa-order'); ?>
+                                    <?php
+                                    /* translators: 1. opening <strong> tag with inline red color style for "required", 2. closing </strong> tag, 3. opening <a> tag for "Numbers", 4. closing </a> tag */
+                                    echo wp_kses(
+                                        sprintf(
+                                            /* translators: 1. opening <strong> tag with inline red color style for "required", 2. closing </strong> tag, 3. opening <a> tag for "Numbers", 4. closing </a> tag */
+                                            __('WhatsApp number is %1$srequired%2$s. Please set it on the %3$sNumbers%4$s tab.', 'oneclick-wa-order'),
+                                            '<strong style="color:red;">', // opening <strong> tag with red color style
+                                            '</strong>', // closing <strong> tag
+                                            '<a href="edit.php?post_type=wa-order-numbers"><strong>', // opening <a> and <strong> tag
+                                            '</strong></a>' // closing <a> and <strong> tag
+                                        ),
+                                        array(
+                                            'strong' => array('style' => array()), // Allow strong with style attribute
+                                            'a' => array('href' => array(), 'target' => array()) // Allow a tag with href and target attributes
+                                        )
+                                    );
+                                    ?>
                                 </p>
                             </td>
                         </tr>
                         <!-- END- Dropdown WA Number -->
                         <tr class="wa_order_message">
                             <th scope="row">
-                                <label class="wa_order_message_label" for="message_wbw"><b><?php _e('Custom Message', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_message_label" for="message_wbw"><b><?php esc_html_e('Custom Message', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
-                                <textarea name="wa_order_floating_message" class="wa_order_input_areatext" rows="5" placeholder="<?php _e('e.g. Hello, I need to know more about', 'oneclick-wa-order'); ?>"><?php echo esc_textarea(get_option('wa_order_floating_message')); ?></textarea>
+                                <textarea name="wa_order_floating_message" class="wa_order_input_areatext" rows="5" placeholder="<?php esc_html_e('e.g. Hello, I need to know more about', 'oneclick-wa-order'); ?>"><?php echo esc_textarea(get_option('wa_order_floating_message')); ?></textarea>
                                 <p class="description">
-                                    <?php _e('Enter custom message, e.g. <code>Hello, I need to know more about</code>', 'oneclick-wa-order'); ?></p>
+                                    <?php
+                                    /* translators: 1. example message for custom input inside <code> tags */
+                                    echo sprintf(
+                                        /* translators: 1. example message for custom input */
+                                        esc_html__('Enter custom message, e.g. %1$sHello, I need to know more about%2$s', 'oneclick-wa-order'),
+                                        '<code>', // opening <code> tag
+                                        '</code>' // closing <code> tag
+                                    );
+                                    ?>
+                                </p>
                             </td>
                         </tr>
                         <tr class="wa_order_target">
                             <th scope="row">
-                                <label class="wa_order_target_label" for="wa_order_target"><b><?php _e('Show Source Page URL?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_target_label" for="wa_order_target"><b><?php esc_html_e('Show Source Page URL?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_floating_source_url" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_floating_source_url'), 'yes'); ?>>
-                                <?php _e('This will include the URL of the page where the button is clicked in the message.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will include the URL of the page where the button is clicked in the message.', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
                         <tr class="wa_order_btn_text">
                             <th scope="row">
-                                <label class="wa_order_btn_txt_label" for="wa_order_floating_source_url_label"><b><?php _e('Source Page URL Label', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_btn_txt_label" for="wa_order_floating_source_url_label"><b><?php esc_html_e('Source Page URL Label', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
-                                <input type="text" name="wa_order_floating_source_url_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_floating_source_url_label')); ?>" placeholder="<?php _e('From URL:', 'oneclick-wa-order'); ?>">
+                                <input type="text" name="wa_order_floating_source_url_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_floating_source_url_label')); ?>" placeholder="<?php esc_html_e('From URL:', 'oneclick-wa-order'); ?>">
                                 <p class="description">
-                                    <?php _e('Add a label for the source page URL. <code>e.g. From URL:</code>', 'oneclick-wa-order'); ?></p>
+                                    <?php
+                                    /* translators: 1. example label for the source page URL inside <code> tags */
+                                    echo sprintf(
+                                        /* translators: 1. example label for the source page URL */
+                                        esc_html__('Add a label for the source page URL. %1$se.g. From URL:%2$s', 'oneclick-wa-order'),
+                                        '<code>', // opening <code> tag
+                                        '</code>' // closing <code> tag
+                                    );
+                                    ?>
+                                </p>
                             </td>
                         </tr>
                         <tr class="wa_order_target">
                             <th scope="row">
-                                <label class="wa_order_target_label" for="wa_order_target"><b><?php _e('Open in New Tab?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_target_label" for="wa_order_target"><b><?php esc_html_e('Open in New Tab?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_floating_target" class="wa_order_input_check" value="_blank" <?php checked(get_option('wa_order_floating_target'), '_blank'); ?>>
-                                <?php _e('Yes, Open in New Tab', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('Yes, Open in New Tab', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
@@ -840,70 +1232,72 @@ function wa_order_create_admin_page()
                 <table class="form-table">
                     <tbody>
                         <hr />
-                        <h2 class="section_wa_order"><?php _e('Display Options', 'oneclick-wa-order'); ?></h2>
+                        <h2 class="section_wa_order"><?php esc_html_e('Display Options', 'oneclick-wa-order'); ?></h2>
                         <p>
-                            <?php _e('Configure where and how you\'d like the floating button to be displayed..', 'oneclick-wa-order'); ?>
+                            <?php esc_html_e('Configure where and how you\'d like the floating button to be displayed..', 'oneclick-wa-order'); ?>
                             <br />
                         </p>
                         <hr />
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
                                 <label>
-                                    <?php _e('Floating Button Position', 'oneclick-wa-order') ?>
+                                    <?php esc_html_e('Floating Button Position', 'oneclick-wa-order') ?>
                                 </label>
                             </th>
                             <td>
-                                <input type="radio" name="wa_order_floating_button_position" value="left" <?php checked('left', get_option('wa_order_floating_button_position'), true); ?>> <?php _e('Left', 'oneclick-wa-order'); ?>
-                                <input type="radio" name="wa_order_floating_button_position" value="right" <?php checked('right', get_option('wa_order_floating_button_position'), true); ?>> <?php _e('Right', 'oneclick-wa-order'); ?>
-                                <?php _e('Right', 'oneclick-wa-order'); ?>
+                                <input type="radio" name="wa_order_floating_button_position" value="left" <?php checked('left', get_option('wa_order_floating_button_position'), true); ?>> <?php esc_html_e('Left', 'oneclick-wa-order'); ?>
+                                <input type="radio" name="wa_order_floating_button_position" value="right" <?php checked('right', get_option('wa_order_floating_button_position'), true); ?>> <?php esc_html_e('Right', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('Right', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
                                 <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn">
-                                    <strong><?php _e('Display Tooltip?', 'oneclick-wa-order'); ?></strong>
+                                    <strong><?php esc_html_e('Display Tooltip?', 'oneclick-wa-order'); ?></strong>
                                 </label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_floating_tooltip_enable" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_floating_tooltip_enable'), 'yes'); ?>>
-                                <?php _e('This will show a custom tooltip', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will show a custom tooltip', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
                         <tr class="wa_order_btn_text">
                             <th scope="row">
                                 <label class="wa_order_btn_txt_label" for="floating_tooltip">
-                                    <strong><?php _e('Button Tooltip', 'oneclick-wa-order'); ?></strong>
+                                    <strong><?php esc_html_e('Button Tooltip', 'oneclick-wa-order'); ?></strong>
                                 </label>
                             </th>
                             <td>
-                                <input type="text" name="wa_order_floating_tooltip" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_floating_tooltip')); ?>" placeholder="<?php _e('e.g. Let\'s Chat', 'oneclick-wa-order'); ?>">
+                                <input type="text" name="wa_order_floating_tooltip" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_floating_tooltip')); ?>" placeholder="<?php esc_html_e('e.g. Let\'s Chat', 'oneclick-wa-order'); ?>">
                                 <p class="description">
-                                    <?php _e('Use this to greet your customers. The tooltip container size is very <br>limited so make sure to make it as short as possible.', 'oneclick-wa-order'); ?>
+                                    <?php esc_html_e('Use this to greet your customers.', 'oneclick-wa-order'); ?>
+                                    <br>
+                                    <?php esc_html_e('The tooltip container size is very limited so make sure to make it as short as possible.', 'oneclick-wa-order'); ?>
                                 </p>
                             </td>
                         </tr>
                         <tr class="wa_order_target">
                             <th scope="row">
                                 <label class="wa_order_target_label" for="wa_order_target">
-                                    <strong><?php _e('Hide Floating Button on Mobile?', 'oneclick-wa-order'); ?></strong>
+                                    <strong><?php esc_html_e('Hide Floating Button on Mobile?', 'oneclick-wa-order'); ?></strong>
                                 </label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_floating_hide_mobile" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_floating_hide_mobile'), 'yes'); ?>>
-                                <?php _e('This will hide Floating Button on Mobile.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide Floating Button on Mobile.', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
                         <tr class="wa_order_target">
                             <th scope="row">
                                 <label class="wa_order_target_label" for="wa_order_target">
-                                    <strong><?php _e('Hide Floating Button on Desktop?', 'oneclick-wa-order'); ?></strong>
+                                    <strong><?php esc_html_e('Hide Floating Button on Desktop?', 'oneclick-wa-order'); ?></strong>
                                 </label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_floating_hide_desktop" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_floating_hide_desktop'), 'yes'); ?>>
-                                <?php _e('This will hide Floating Button on Desktop.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide Floating Button on Desktop.', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
@@ -911,12 +1305,12 @@ function wa_order_create_admin_page()
                         <tr class="wa_order_target">
                             <th scope="row">
                                 <label class="wa_order_target_label" for="wa_order_target">
-                                    <strong><?php _e('Hide Floating Button on All Single Posts?', 'oneclick-wa-order'); ?></strong>
+                                    <strong><?php esc_html_e('Hide Floating Button on All Single Posts?', 'oneclick-wa-order'); ?></strong>
                                 </label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_floating_hide_all_single_posts" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_floating_hide_all_single_posts'), 'yes'); ?>>
-                                <?php _e('This will hide Floating Button on all single posts.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide Floating Button on all single posts.', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
@@ -925,12 +1319,12 @@ function wa_order_create_admin_page()
                         <tr class="wa_order_target">
                             <th scope="row">
                                 <label class="wa_order_target_label" for="wa_order_target">
-                                    <strong><?php _e('Hide Floating Button on All Single Posts?', 'oneclick-wa-order'); ?></strong>
+                                    <strong><?php esc_html_e('Hide Floating Button on All Single Posts?', 'oneclick-wa-order'); ?></strong>
                                 </label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_floating_hide_all_single_pages" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_floating_hide_all_single_pages'), 'yes'); ?>>
-                                <?php _e('This will hide Floating Button on all single pages.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide Floating Button on all single pages.', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
@@ -939,12 +1333,12 @@ function wa_order_create_admin_page()
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
                                 <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn">
-                                    <strong><?php _e('Hide Floating Button on Selected Post(s)', 'oneclick-wa-order'); ?></strong>
+                                    <strong><?php esc_html_e('Hide Floating Button on Selected Post(s)', 'oneclick-wa-order'); ?></strong>
                                 </label>
                             </th>
                             <td>
                                 <?php wp_enqueue_script('wa_order_js_select2'); ?>
-                                <?php wp_enqueue_script('wa_order_js_admin'); ?>
+                                <?php wp_enqueue_script('wa_order_select2_helper'); ?>
                                 <?php wp_enqueue_style('wa_order_selet2_style'); ?>
                                 <select multiple="multiple" name="wa_order_floating_hide_specific_posts[]" class="postform octo-post-filter" style="width: 50%;">
                                     <?php
@@ -962,14 +1356,14 @@ function wa_order_create_admin_page()
                                     foreach ($posts as $post) {
                                         $selected = in_array($post->ID, $option_array) ? ' selected="selected" ' : '';
                                     ?>
-                                        <option value="<?php echo esc_attr($post->ID); ?>" <?php echo $selected; ?>>
+                                        <option value="<?php echo esc_attr($post->ID); ?>" <?php echo esc_attr($selected); ?>>
                                             <?php echo esc_html(ucwords($post->post_title)); ?>
                                         </option>
                                     <?php
                                     } //endforeach
                                     ?>
                                 </select>
-                                <p><?php _e('You can hide the floating button on the selected post(s).', 'oneclick-wa-order'); ?></p><br>
+                                <p><?php esc_html_e('You can hide the floating button on the selected post(s).', 'oneclick-wa-order'); ?></p><br>
                             </td>
                         </tr>
                         <!-- END - Multiple posts selection -->
@@ -977,7 +1371,7 @@ function wa_order_create_admin_page()
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
                                 <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn">
-                                    <strong><?php _e('Hide Floating Button on Selected Page(s)', 'oneclick-wa-order'); ?></strong>
+                                    <strong><?php esc_html_e('Hide Floating Button on Selected Page(s)', 'oneclick-wa-order'); ?></strong>
                                 </label>
                             </th>
                             <td>
@@ -997,21 +1391,21 @@ function wa_order_create_admin_page()
                                     foreach ($pages as $page) {
                                         $selected = in_array($page->ID, $option_array) ? ' selected="selected" ' : '';
                                     ?>
-                                        <option value="<?php echo esc_attr($page->ID); ?>" <?php echo $selected; ?>>
+                                        <option value="<?php echo esc_attr($page->ID); ?>" <?php echo esc_attr($selected); ?>>
                                             <?php echo esc_html(ucwords($page->post_title)); ?>
                                         </option>
                                     <?php
                                     } //endforeach
                                     ?>
                                 </select>
-                                <p><?php _e('You can hide the floating button on the selected page(s).', 'oneclick-wa-order'); ?></p><br>
+                                <p><?php esc_html_e('You can hide the floating button on the selected page(s).', 'oneclick-wa-order'); ?></p><br>
                             </td>
                         </tr>
                         <!-- END - Multiple pages selection -->
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
                                 <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn">
-                                    <strong><?php _e('Hide Floating Button on Products in Categories', 'oneclick-wa-order'); ?></strong>
+                                    <strong><?php esc_html_e('Hide Floating Button on Products in Categories', 'oneclick-wa-order'); ?></strong>
                                 </label>
                             </th>
                             <td>
@@ -1027,20 +1421,20 @@ function wa_order_create_admin_page()
                                     foreach ($categories as $category) {
                                         $selected = in_array($category->term_id, $option_array) ? ' selected="selected" ' : '';
                                     ?>
-                                        <option value="<?php echo esc_attr($category->term_id); ?>" <?php echo $selected; ?>>
+                                        <option value="<?php echo esc_attr($category->term_id); ?>" <?php echo esc_attr($selected); ?>>
                                             <?php echo esc_html(ucwords($category->cat_name)) . ' (' . esc_html($category->category_count) . ')'; ?>
                                         </option>
                                     <?php
                                     } //endforeach
                                     ?>
                                 </select>
-                                <p><?php _e('You can hide the floating button on products in the selected categories.', 'oneclick-wa-order'); ?></p>
+                                <p><?php esc_html_e('You can hide the floating button on products in the selected categories.', 'oneclick-wa-order'); ?></p>
                                 <br>
                             </td>
                         </tr>
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php _e('Hide Floating Button on Products in Tags', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php esc_html_e('Hide Floating Button on Products in Tags', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <select multiple="multiple" name="wa_order_floating_hide_product_tags[]" class="postform octo-category-filter" style="width: 50%;">
@@ -1055,7 +1449,7 @@ function wa_order_create_admin_page()
                                     foreach ($tag_query as $term) {
                                         $selected = in_array($term->term_id, $option_array) ? ' selected="selected" ' : '';
                                     ?>
-                                        <option value="<?php echo esc_attr($term->term_id); ?>" <?php echo $selected; ?>>
+                                        <option value="<?php echo esc_attr($term->term_id); ?>" <?php echo esc_attr($selected); ?>>
                                             <?php echo esc_html(ucwords($term->name)) . ' (' . esc_html($term->count) . ')'; ?>
                                         </option>
                                     <?php
@@ -1063,13 +1457,133 @@ function wa_order_create_admin_page()
                                     ?>
                                 </select>
                                 <p>
-                                    <?php _e('You can hide the floating button on products in the selected tags.', 'oneclick-wa-order');
+                                    <?php esc_html_e('You can hide the floating button on products in the selected tags.', 'oneclick-wa-order');
                                     ?>
                                     <br />
                                 </p>
                                 <br>
                             </td>
                         </tr>
+                        <!-- Floating Button Margin -->
+                        <tr class="wa_order_remove_price">
+                            <th scope="row">
+                                <label class="wa_order_price_label" for="wa_order_floating_button_margin_top">
+                                    <strong><?php esc_html_e('Button Margin', 'oneclick-wa-order'); ?></strong>
+                                </label>
+                            </th>
+                            <td>
+                                <ul class="boxes-control">
+                                    <li class="box-control">
+                                        <input id="wa_order_floating_button_margin_top" type="number" name="wa_order_floating_button_margin_top" value="<?php echo esc_attr(get_option('wa_order_floating_button_margin_top')); ?>" placeholder="">
+                                        <p class="control-label"><?php esc_html_e('Top', 'oneclick-wa-order'); ?>
+                                            <br />
+                                        </p>
+                                    </li>
+                                    <li class="box-control">
+                                        <input id="wa_order_floating_button_margin_right" type="number" name="wa_order_floating_button_margin_right" value="<?php echo esc_attr(get_option('wa_order_floating_button_margin_right')); ?>" placeholder="">
+                                        <p class="control-label"><?php esc_html_e('Right', 'oneclick-wa-order'); ?><br /></p>
+                                    </li>
+                                    <li class="box-control">
+                                        <input id="wa_order_floating_button_margin_bottom" type="number" name="wa_order_floating_button_margin_bottom" value="<?php echo esc_attr(get_option('wa_order_floating_button_margin_bottom')); ?>" placeholder="">
+                                        <p class="control-label"><?php esc_html_e('Bottom', 'oneclick-wa-order'); ?><br /></p>
+                                    </li>
+                                    <li class="box-control">
+                                        <input id="wa_order_floating_button_margin_left" type="number" name="wa_order_floating_button_margin_left" value="<?php echo esc_attr(get_option('wa_order_floating_button_margin_left')); ?>" placeholder="">
+                                        <p class="control-label"><?php esc_html_e('Left', 'oneclick-wa-order'); ?><br /></p>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <!-- END - Floating Button Margin -->
+                        <!-- Floating Button Padding -->
+                        <tr class="wa_order_remove_price">
+                            <th scope="row">
+                                <label class="wa_order_price_label" for="wa_order_floating_button_padding_top">
+                                    <strong><?php esc_html_e('Button Padding', 'oneclick-wa-order'); ?></strong>
+                                </label>
+                            </th>
+                            <td>
+                                <ul class="boxes-control">
+                                    <li class="box-control">
+                                        <input id="wa_order_floating_button_padding_top" type="number" name="wa_order_floating_button_padding_top" value="<?php echo esc_attr(get_option('wa_order_floating_button_padding_top')); ?>" placeholder="">
+                                        <p class="control-label"><?php esc_html_e('Top', 'oneclick-wa-order'); ?><br /></p>
+                                    </li>
+                                    <li class="box-control">
+                                        <input id="wa_order_floating_button_padding_right" type="number" name="wa_order_floating_button_padding_right" value="<?php echo esc_attr(get_option('wa_order_floating_button_padding_right')); ?>" placeholder="">
+                                        <p class="control-label"><?php esc_html_e('Right', 'oneclick-wa-order'); ?><br /></p>
+                                    </li>
+                                    <li class="box-control">
+                                        <input id="wa_order_floating_button_padding_bottom" type="number" name="wa_order_floating_button_padding_bottom" value="<?php echo esc_attr(get_option('wa_order_floating_button_padding_bottom')); ?>" placeholder="">
+                                        <p class="control-label"><?php esc_html_e('Bottom', 'oneclick-wa-order'); ?><br /></p>
+                                    </li>
+                                    <li class="box-control">
+                                        <input id="wa_order_floating_button_padding_left" type="number" name="wa_order_floating_button_padding_left" value="<?php echo esc_attr(get_option('wa_order_floating_button_padding_left')); ?>" placeholder="">
+                                        <p class="control-label"><?php esc_html_e('Left', 'oneclick-wa-order'); ?><br /></p>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <!-- END - Floating Button Padding -->
+                        <!-- Floating Button Icon Margin -->
+                        <tr class="wa_order_remove_price">
+                            <th scope="row">
+                                <label class="wa_order_price_label" for="wa_order_floating_button_icon_margin_top">
+                                    <strong><?php esc_html_e('Button Icon Margin', 'oneclick-wa-order'); ?></strong>
+                                </label>
+                            </th>
+                            <td>
+                                <ul class="boxes-control">
+                                    <li class="box-control">
+                                        <input id="wa_order_floating_button_icon_margin_top" type="number" name="wa_order_floating_button_icon_margin_top" value="<?php echo esc_attr(get_option('wa_order_floating_button_icon_margin_top')); ?>" placeholder="">
+                                        <p class="control-label"><?php esc_html_e('Top', 'oneclick-wa-order'); ?>
+                                            <br />
+                                        </p>
+                                    </li>
+                                    <li class="box-control">
+                                        <input id="wa_order_floating_button_icon_margin_right" type="number" name="wa_order_floating_button_icon_margin_right" value="<?php echo esc_attr(get_option('wa_order_floating_button_icon_margin_right')); ?>" placeholder="">
+                                        <p class="control-label"><?php esc_html_e('Right', 'oneclick-wa-order'); ?><br /></p>
+                                    </li>
+                                    <li class="box-control">
+                                        <input id="wa_order_floating_button_icon_margin_bottom" type="number" name="wa_order_floating_button_icon_margin_bottom" value="<?php echo esc_attr(get_option('wa_order_floating_button_icon_margin_bottom')); ?>" placeholder="">
+                                        <p class="control-label"><?php esc_html_e('Bottom', 'oneclick-wa-order'); ?><br /></p>
+                                    </li>
+                                    <li class="box-control">
+                                        <input id="wa_order_floating_button_icon_margin_left" type="number" name="wa_order_floating_button_icon_margin_left" value="<?php echo esc_attr(get_option('wa_order_floating_button_icon_margin_left')); ?>" placeholder="">
+                                        <p class="control-label"><?php esc_html_e('Left', 'oneclick-wa-order'); ?><br /></p>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <!-- END - Floating Button Icon Margin -->
+                        <!-- Floating Button Icon Padding -->
+                        <tr class="wa_order_remove_price">
+                            <th scope="row">
+                                <label class="wa_order_price_label" for="wa_order_floating_button_icon_padding_top">
+                                    <strong><?php esc_html_e('Button Icon Padding', 'oneclick-wa-order'); ?></strong>
+                                </label>
+                            </th>
+                            <td>
+                                <ul class="boxes-control">
+                                    <li class="box-control">
+                                        <input id="wa_order_floating_button_icon_padding_top" type="number" name="wa_order_floating_button_icon_padding_top" value="<?php echo esc_attr(get_option('wa_order_floating_button_icon_padding_top')); ?>" placeholder="">
+                                        <p class="control-label"><?php esc_html_e('Top', 'oneclick-wa-order'); ?><br /></p>
+                                    </li>
+                                    <li class="box-control">
+                                        <input id="wa_order_floating_button_icon_padding_right" type="number" name="wa_order_floating_button_icon_padding_right" value="<?php echo esc_attr(get_option('wa_order_floating_button_icon_padding_right')); ?>" placeholder="">
+                                        <p class="control-label"><?php esc_html_e('Right', 'oneclick-wa-order'); ?><br /></p>
+                                    </li>
+                                    <li class="box-control">
+                                        <input id="wa_order_floating_button_icon_padding_bottom" type="number" name="wa_order_floating_button_icon_padding_bottom" value="<?php echo esc_attr(get_option('wa_order_floating_button_icon_padding_bottom')); ?>" placeholder="">
+                                        <p class="control-label"><?php esc_html_e('Bottom', 'oneclick-wa-order'); ?><br /></p>
+                                    </li>
+                                    <li class="box-control">
+                                        <input id="wa_order_floating_button_icon_padding_left" type="number" name="wa_order_floating_button_icon_padding_left" value="<?php echo esc_attr(get_option('wa_order_floating_button_icon_padding_left')); ?>" placeholder="">
+                                        <p class="control-label"><?php esc_html_e('Left', 'oneclick-wa-order'); ?><br /></p>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <!-- END - Floating Button Icon Padding -->
                     </tbody>
                 </table>
                 <!-- END - Floating Button Display Options -->
@@ -1082,26 +1596,27 @@ function wa_order_create_admin_page()
                 <?php settings_fields('wa-order-settings-group-display-options'); ?>
                 <?php do_settings_sections('wa-order-settings-group-display-options'); ?>
                 <?php wp_enqueue_script('wa_order_js_select2'); ?>
+                <?php wp_enqueue_script('wa_order_select2_helper'); ?>
                 <?php wp_enqueue_style('wp-color-picker'); ?>
                 <?php wp_enqueue_style('wa_order_selet2_style'); ?>
                 <?php wp_enqueue_script('wp-color-picker-alpha'); ?>
                 <?php wp_enqueue_script('wp-color-picker-init'); ?>
                 <?php wp_enqueue_script('wa_order_js_admin'); ?>
-                <h2 class="section_wa_order"><?php _e('Display Options', 'oneclick-wa-order'); ?></h2>
+                <h2 class="section_wa_order"><?php esc_html_e('Display Options', 'oneclick-wa-order'); ?></h2>
                 <p>
-                    <?php _e('Here, you can configure some options for hiding elements to convert customers phone number into clickable WhatsApp link.', 'oneclick-wa-order'); ?>
+                    <?php esc_html_e('Here, you can configure some options for hiding elements to convert customers phone number into clickable WhatsApp link.', 'oneclick-wa-order'); ?>
                     <br />
                 </p>
                 <hr>
                 <!-- Button Colors - Display Options -->
                 <table class="form-table">
                     <tbody>
-                        <h3 class="section_wa_order"><?php _e('Button Colors', 'oneclick-wa-order'); ?></h3>
-                        <p><?php _e('Customize the WhatsApp button appearance however you like.', 'oneclick-wa-order'); ?></p>
+                        <h3 class="section_wa_order"><?php esc_html_e('Button Colors', 'oneclick-wa-order'); ?></h3>
+                        <p><?php esc_html_e('Customize the WhatsApp button appearance however you like.', 'oneclick-wa-order'); ?></p>
                         <!-- Button Background Color -->
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Background Color', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Background Color', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <?php
@@ -1116,7 +1631,7 @@ function wa_order_create_admin_page()
                         <!-- Button Background Hover Color -->
                         <tr class="wa_order_option_remove_quantity">
                             <th scope="row">
-                                <label class="wa_order_option_remove_quantity" for="wa_order_option_remove_quantity"><b><?php _e('Background Hover Color', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_option_remove_quantity" for="wa_order_option_remove_quantity"><b><?php esc_html_e('Background Hover Color', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <?php
@@ -1131,7 +1646,7 @@ function wa_order_create_admin_page()
                         <!-- Button Text Color -->
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Text Color', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Text Color', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <?php
@@ -1146,7 +1661,7 @@ function wa_order_create_admin_page()
                         <!-- Button Text Hover Color -->
                         <tr class="wa_order_remove_price">
                             <th scope="row">
-                                <label class="wa_order_price_label" for="wa_order_remove_price"><b><?php _e('Text Hover Color', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_price_label" for="wa_order_remove_price"><b><?php esc_html_e('Text Hover Color', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <?php
@@ -1164,8 +1679,8 @@ function wa_order_create_admin_page()
                 <!-- Button Box Shadow -->
                 <table class="form-table">
                     <tbody>
-                        <h3 class="section_wa_order"><?php _e('Button Box Shadow Color', 'oneclick-wa-order'); ?></h3>
-                        <p><?php _e('Customize the box shadow color for the WhatsApp button.', 'oneclick-wa-order'); ?></p>
+                        <h3 class="section_wa_order"><?php esc_html_e('Button Box Shadow Color', 'oneclick-wa-order'); ?></h3>
+                        <p><?php esc_html_e('Customize the box shadow color for the WhatsApp button.', 'oneclick-wa-order'); ?></p>
                         <!-- Button Box Shadow Settings -->
                         <?php
                         $bshdw_hz = get_option('wa_order_bshdw_horizontal', '0');
@@ -1182,25 +1697,25 @@ function wa_order_create_admin_page()
                         <!-- Normal State Box Shadow -->
                         <tr class="wa_order_remove_price">
                             <th scope="row">
-                                <label class="wa_order_price_label" for="wa_order_remove_price"><strong><?php _e('Box Shadow', 'oneclick-wa-order'); ?></strong></label>
+                                <label class="wa_order_price_label" for="wa_order_remove_price"><strong><?php esc_html_e('Box Shadow', 'oneclick-wa-order'); ?></strong></label>
                             </th>
                             <td>
                                 <ul class="boxes-control">
                                     <li class="box-control">
                                         <input id="wa_order_bshdw_horizontal" type="number" name="wa_order_bshdw_horizontal" value="<?php echo esc_attr($bshdw_hz); ?>" placeholder="">
-                                        <p class="control-label"><?php _e('Horizontal', 'oneclick-wa-order'); ?><br /></p>
+                                        <p class="control-label"><?php esc_html_e('Horizontal', 'oneclick-wa-order'); ?><br /></p>
                                     </li>
                                     <li class="box-control">
                                         <input id="wa_order_bshdw_vertical" type="number" name="wa_order_bshdw_vertical" value="<?php echo esc_attr($bshdw_v); ?>" placeholder="">
-                                        <p class="control-label"><?php _e('Vertical', 'oneclick-wa-order'); ?><br /></p>
+                                        <p class="control-label"><?php esc_html_e('Vertical', 'oneclick-wa-order'); ?><br /></p>
                                     </li>
                                     <li class="box-control">
                                         <input id="wa_order_bshdw_blur" type="number" name="wa_order_bshdw_blur" value="<?php echo esc_attr($bshdw_b); ?>" placeholder="">
-                                        <p class="control-label"><?php _e('Blur', 'oneclick-wa-order'); ?><br /></p>
+                                        <p class="control-label"><?php esc_html_e('Blur', 'oneclick-wa-order'); ?><br /></p>
                                     </li>
                                     <li class="box-control">
                                         <input id="wa_order_bshdw_spread" type="number" name="wa_order_bshdw_spread" value="<?php echo esc_attr($bshdw_s); ?>" placeholder="">
-                                        <p class="control-label"><?php _e('Spread', 'oneclick-wa-order'); ?><br /></p>
+                                        <p class="control-label"><?php esc_html_e('Spread', 'oneclick-wa-order'); ?><br /></p>
                                     </li>
                                     <li class="box-color-control">
                                         <input id="wa_order_btn_box_shdw" type="text" class="color-picker" data-alpha-enabled="true" name="wa_order_btn_box_shdw" value="<?php echo esc_attr($bshdw_color); ?>" />
@@ -1211,25 +1726,25 @@ function wa_order_create_admin_page()
                         <!-- Hover State Box Shadow -->
                         <tr class="wa_order_remove_price">
                             <th scope="row">
-                                <label class="wa_order_price_label" for="wa_order_remove_price"><strong><?php _e('Box Shadow Hover', 'oneclick-wa-order'); ?></strong></label>
+                                <label class="wa_order_price_label" for="wa_order_remove_price"><strong><?php esc_html_e('Box Shadow Hover', 'oneclick-wa-order'); ?></strong></label>
                             </th>
                             <td>
                                 <ul class="boxes-control">
                                     <li class="box-control">
                                         <input id="wa_order_bshdw_horizontal_hover" type="number" name="wa_order_bshdw_horizontal_hover" value="<?php echo esc_attr($bshdw_h_h); ?>" placeholder="">
-                                        <p class="control-label"><?php _e('Horizontal', 'oneclick-wa-order'); ?><br /></p>
+                                        <p class="control-label"><?php esc_html_e('Horizontal', 'oneclick-wa-order'); ?><br /></p>
                                     </li>
                                     <li class="box-control">
                                         <input id="wa_order_bshdw_vertical_hover" type="number" name="wa_order_bshdw_vertical_hover" value="<?php echo esc_attr($bshdw_v_h); ?>" placeholder="">
-                                        <p class="control-label"><?php _e('Vertical', 'oneclick-wa-order'); ?><br /></p>
+                                        <p class="control-label"><?php esc_html_e('Vertical', 'oneclick-wa-order'); ?><br /></p>
                                     </li>
                                     <li class="box-control">
                                         <input id="wa_order_bshdw_blur_hover" type="number" name="wa_order_bshdw_blur_hover" value="<?php echo esc_attr($bshdw_b_h); ?>" placeholder="">
-                                        <p class="control-label"><?php _e('Blur', 'oneclick-wa-order'); ?><br /></p>
+                                        <p class="control-label"><?php esc_html_e('Blur', 'oneclick-wa-order'); ?><br /></p>
                                     </li>
                                     <li class="box-control">
                                         <input id="wa_order_bshdw_spread_hover" type="number" name="wa_order_bshdw_spread_hover" value="<?php echo esc_attr($bshdw_s_h); ?>" placeholder="">
-                                        <p class="control-label"><?php _e('Spread', 'oneclick-wa-order'); ?><br /></p>
+                                        <p class="control-label"><?php esc_html_e('Spread', 'oneclick-wa-order'); ?><br /></p>
                                     </li>
                                     <li class="box-color-control">
                                         <input id="wa_order_btn_box_shdw_hover" type="text" class="color-picker" data-alpha-enabled="true" name="wa_order_btn_box_shdw_hover" value="<?php echo esc_attr($bshdw_color_hover); ?>" />
@@ -1240,25 +1755,25 @@ function wa_order_create_admin_page()
                         <!-- Box Shadow Position -->
                         <tr class="wa_order_remove_price">
                             <th scope="row">
-                                <label class="wa_order_price_label" for="wa_order_remove_price"><b><?php _e('Position', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_price_label" for="wa_order_remove_price"><b><?php esc_html_e('Position', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="radio" name="wa_order_bshdw_position" value="outline" <?php checked('outline', get_option('wa_order_bshdw_position'), true); ?>>
-                                <?php _e('Outline', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('Outline', 'oneclick-wa-order'); ?>
                                 <input type="radio" name="wa_order_bshdw_position" value="inset" <?php checked('inset', get_option('wa_order_bshdw_position'), true); ?>>
-                                <?php _e('Inset', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('Inset', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
                         <!-- Box Shadow Hover Position -->
                         <tr class="wa_order_remove_price">
                             <th scope="row">
-                                <label class="wa_order_price_label" for="wa_order_remove_price"><b><?php _e('Hover Position', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_price_label" for="wa_order_remove_price"><b><?php esc_html_e('Hover Position', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="radio" name="wa_order_bshdw_position_hover" value="outline" <?php checked('outline', get_option('wa_order_bshdw_position_hover'), true); ?>>
-                                <?php _e('Outline', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('Outline', 'oneclick-wa-order'); ?>
                                 <input type="radio" name="wa_order_bshdw_position_hover" value="inset" <?php checked('inset', get_option('wa_order_bshdw_position_hover'), true); ?>>
-                                <?php _e('Inset', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('Inset', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
                     </tbody>
@@ -1268,63 +1783,63 @@ function wa_order_create_admin_page()
                 <!-- Single Product Page Display Options -->
                 <table class="form-table">
                     <tbody>
-                        <h3 class="section_wa_order"><?php _e('Single Product Page', 'oneclick-wa-order'); ?></h3>
-                        <p><?php _e('The following options will be only effective on single product page.', 'oneclick-wa-order'); ?></p>
+                        <h3 class="section_wa_order"><?php esc_html_e('Single Product Page', 'oneclick-wa-order'); ?></h3>
+                        <p><?php esc_html_e('The following options will be only effective on single product page.', 'oneclick-wa-order'); ?></p>
                         <!-- Hide Button on Desktop -->
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Hide Button on Desktop?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Hide Button on Desktop?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_remove_btn" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_remove_btn'), 'yes'); ?>>
-                                <?php _e('This will hide WhatsApp Button on Desktop.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide WhatsApp Button on Desktop.', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
                         <!-- Hide Button on Mobile -->
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Hide Button on Mobile?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Hide Button on Mobile?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_remove_btn_mobile" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_remove_btn_mobile'), 'yes'); ?>>
-                                <?php _e('This will hide WhatsApp Button on Mobile.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide WhatsApp Button on Mobile.', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
                         <tr class="wa_order_option_remove_quantity">
                             <th scope="row">
-                                <label class="wa_order_option_remove_quantity" for="wa_order_option_remove_quantity"><b><?php _e('Hide Product Quantity Option?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_option_remove_quantity" for="wa_order_option_remove_quantity"><b><?php esc_html_e('Hide Product Quantity Option?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_remove_quantity" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_remove_quantity'), 'yes'); ?>>
-                                <?php _e('This will hide product quantity option field.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide product quantity option field.', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
                         <tr class="wa_order_remove_price">
                             <th scope="row">
-                                <label class="wa_order_price_label" for="wa_order_remove_price"><b><?php _e('Hide Price in Product Page?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_price_label" for="wa_order_remove_price"><b><?php esc_html_e('Hide Price in Product Page?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_remove_price" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_remove_price'), 'yes'); ?>>
-                                <?php _e('This will hide price in Product page.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide price in Product page.', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php _e('Hide Add to Cart button?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php esc_html_e('Hide Add to Cart button?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_remove_cart_btn" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_remove_cart_btn'), 'yes'); ?>>
-                                <?php _e('This will hide Add to Cart button.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide Add to Cart button.', 'oneclick-wa-order'); ?>
                                 <br>
                             </td>
                         </tr>
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php _e('Hide WA Button on Products in Categories', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php esc_html_e('Hide WA Button on Products in Categories', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <select multiple="multiple" name="wa_order_option_exlude_single_product_cats[]" class="postform octo-category-filter" style="width: 50%;">
@@ -1335,13 +1850,13 @@ function wa_order_create_admin_page()
                                     $categories = get_categories($args);
                                     foreach ($categories as $category) {
                                         $selected = in_array($category->term_id, $option_array) ? ' selected="selected" ' : ''; ?>
-                                        <option value="<?php echo esc_attr($category->term_id); ?>" <?php echo $selected; ?>>
+                                        <option value="<?php echo esc_attr($category->term_id); ?>" <?php echo esc_attr($selected); ?>>
                                             <?php echo esc_html(ucwords($category->cat_name)) . ' (' . esc_html($category->category_count) . ')'; ?>
                                         </option>
                                     <?php } ?>
                                 </select>
                                 <p>
-                                    <?php _e('You can hide the WhatsApp button on products in the selected categories.', 'oneclick-wa-order'); ?>
+                                    <?php esc_html_e('You can hide the WhatsApp button on products in the selected categories.', 'oneclick-wa-order'); ?>
                                     <br />
                                 </p>
                                 <br>
@@ -1349,7 +1864,7 @@ function wa_order_create_admin_page()
                         </tr>
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php _e('Hide WA Button on Products in Tags', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php esc_html_e('Hide WA Button on Products in Tags', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <select multiple="multiple" name="wa_order_option_exlude_single_product_tags[]" class="postform octo-category-filter" style="width: 50%;">
@@ -1359,14 +1874,14 @@ function wa_order_create_admin_page()
                                     $tags = get_terms(['taxonomy' => 'product_tag', 'orderby' => 'name']);
                                     foreach ($tags as $tag) {
                                         $selected = in_array($tag->term_id, $option_array) ? ' selected="selected" ' : '';
-                                        echo '<option value="' . esc_attr($tag->term_id) . '"' . $selected . '>';
+                                        echo '<option value="' . esc_attr($tag->term_id) . '"' . esc_attr($selected) . '>';
                                         echo esc_html(ucwords($tag->name)) . ' (' . esc_html($tag->count) . ')';
                                         echo '</option>';
                                     }
                                     ?>
                                 </select>
                                 <p>
-                                    <?php _e('You can hide the WhatsApp button on products in the selected tags.', 'oneclick-wa-order');
+                                    <?php esc_html_e('You can hide the WhatsApp button on products in the selected tags.', 'oneclick-wa-order');
                                     ?>
                                     <br />
                                 </p>
@@ -1377,28 +1892,28 @@ function wa_order_create_admin_page()
                         <tr class="wa_order_remove_price">
                             <th scope="row">
                                 <label class="wa_order_price_label" for="wa_order_remove_price">
-                                    <strong><?php _e('Button Margin', 'oneclick-wa-order'); ?></strong>
+                                    <strong><?php esc_html_e('Button Margin', 'oneclick-wa-order'); ?></strong>
                                 </label>
                             </th>
                             <td>
                                 <ul class="boxes-control">
                                     <li class="box-control">
                                         <input id="wa_order_single_button_margin_top" type="number" name="wa_order_single_button_margin_top" value="<?php echo esc_attr(get_option('wa_order_single_button_margin_top')); ?>" placeholder="">
-                                        <p class="control-label"><?php _e('Top', 'oneclick-wa-order'); ?>
+                                        <p class="control-label"><?php esc_html_e('Top', 'oneclick-wa-order'); ?>
                                             <br />
                                         </p>
                                     </li>
                                     <li class="box-control">
                                         <input id="wa_order_single_button_margin_right" type="number" name="wa_order_single_button_margin_right" value="<?php echo esc_attr(get_option('wa_order_single_button_margin_right')); ?>" placeholder="">
-                                        <p class="control-label"><?php _e('Right', 'oneclick-wa-order'); ?><br /></p>
+                                        <p class="control-label"><?php esc_html_e('Right', 'oneclick-wa-order'); ?><br /></p>
                                     </li>
                                     <li class="box-control">
                                         <input id="wa_order_single_button_margin_bottom" type="number" name="wa_order_single_button_margin_bottom" value="<?php echo esc_attr(get_option('wa_order_single_button_margin_bottom')); ?>" placeholder="">
-                                        <p class="control-label"><?php _e('Bottom', 'oneclick-wa-order'); ?><br /></p>
+                                        <p class="control-label"><?php esc_html_e('Bottom', 'oneclick-wa-order'); ?><br /></p>
                                     </li>
                                     <li class="box-control">
                                         <input id="wa_order_single_button_margin_left" type="number" name="wa_order_single_button_margin_left" value="<?php echo esc_attr(get_option('wa_order_single_button_margin_left')); ?>" placeholder="">
-                                        <p class="control-label"><?php _e('Left', 'oneclick-wa-order'); ?><br /></p>
+                                        <p class="control-label"><?php esc_html_e('Left', 'oneclick-wa-order'); ?><br /></p>
                                     </li>
                                 </ul>
                             </td>
@@ -1408,26 +1923,26 @@ function wa_order_create_admin_page()
                         <tr class="wa_order_remove_price">
                             <th scope="row">
                                 <label class="wa_order_price_label" for="wa_order_remove_price">
-                                    <strong><?php _e('Button Padding', 'oneclick-wa-order'); ?></strong>
+                                    <strong><?php esc_html_e('Button Padding', 'oneclick-wa-order'); ?></strong>
                                 </label>
                             </th>
                             <td>
                                 <ul class="boxes-control">
                                     <li class="box-control">
                                         <input id="wa_order_single_button_padding_top" type="number" name="wa_order_single_button_padding_top" value="<?php echo esc_attr(get_option('wa_order_single_button_padding_top')); ?>" placeholder="">
-                                        <p class="control-label"><?php _e('Top', 'oneclick-wa-order'); ?><br /></p>
+                                        <p class="control-label"><?php esc_html_e('Top', 'oneclick-wa-order'); ?><br /></p>
                                     </li>
                                     <li class="box-control">
                                         <input id="wa_order_single_button_padding_right" type="number" name="wa_order_single_button_padding_right" value="<?php echo esc_attr(get_option('wa_order_single_button_padding_right')); ?>" placeholder="">
-                                        <p class="control-label"><?php _e('Right', 'oneclick-wa-order'); ?><br /></p>
+                                        <p class="control-label"><?php esc_html_e('Right', 'oneclick-wa-order'); ?><br /></p>
                                     </li>
                                     <li class="box-control">
                                         <input id="wa_order_single_button_padding_bottom" type="number" name="wa_order_single_button_padding_bottom" value="<?php echo esc_attr(get_option('wa_order_single_button_padding_bottom')); ?>" placeholder="">
-                                        <p class="control-label"><?php _e('Bottom', 'oneclick-wa-order'); ?><br /></p>
+                                        <p class="control-label"><?php esc_html_e('Bottom', 'oneclick-wa-order'); ?><br /></p>
                                     </li>
                                     <li class="box-control">
                                         <input id="wa_order_single_button_padding_left" type="number" name="wa_order_single_button_padding_left" value="<?php echo esc_attr(get_option('wa_order_single_button_padding_left')); ?>" placeholder="">
-                                        <p class="control-label"><?php _e('Left', 'oneclick-wa-order'); ?><br /></p>
+                                        <p class="control-label"><?php esc_html_e('Left', 'oneclick-wa-order'); ?><br /></p>
                                     </li>
                                 </ul>
                             </td>
@@ -1440,32 +1955,32 @@ function wa_order_create_admin_page()
                 <!-- Shop Loop Display Options -->
                 <table class="form-table">
                     <tbody>
-                        <h2 class="section_wa_order"><?php _e('Shop Loop Page', 'oneclick-wa-order'); ?></h2>
-                        <p><?php _e('The following options will be only effective on shop loop page.', 'oneclick-wa-order'); ?></p>
+                        <h2 class="section_wa_order"><?php esc_html_e('Shop Loop Page', 'oneclick-wa-order'); ?></h2>
+                        <p><?php esc_html_e('The following options will be only effective on shop loop page.', 'oneclick-wa-order'); ?></p>
                         <!-- Hide Button on Desktop -->
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php _e('Hide Button on Desktop?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php esc_html_e('Hide Button on Desktop?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_display_option_shop_loop_hide_desktop" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_display_option_shop_loop_hide_desktop'), 'yes'); ?>>
-                                <?php _e('This will hide WhatsApp Button on Desktop.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide WhatsApp Button on Desktop.', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
                         <!-- Hide Button on Mobile -->
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php _e('Hide Button on Mobile?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php esc_html_e('Hide Button on Mobile?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_display_option_shop_loop_hide_mobile" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_display_option_shop_loop_hide_mobile'), 'yes'); ?>>
-                                <?php _e('This will hide WhatsApp Button on Mobile.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide WhatsApp Button on Mobile.', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
                         <!-- Select Categories -->
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php _e('Hide WA Button Under Products in Categories', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php esc_html_e('Hide WA Button Under Products in Categories', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <select multiple="multiple" name="wa_order_option_exlude_shop_product_cats[]" class="postform octo-category-filter" style="width: 50%;">
@@ -1480,31 +1995,31 @@ function wa_order_create_admin_page()
                                     foreach ($categories as $category) {
                                         $selected = in_array($category->term_id, $option_array) ? ' selected="selected" ' : '';
                                     ?>
-                                        <option value="<?php echo esc_attr($category->term_id); ?>" <?php echo $selected; ?>>
+                                        <option value="<?php echo esc_attr($category->term_id); ?>" <?php echo esc_attr($selected); ?>>
                                             <?php echo esc_html(ucwords($category->cat_name)) . ' (' . esc_html($category->category_count) . ')'; ?>
                                         </option>
                                     <?php
                                     }
                                     ?>
                                 </select>
-                                <p><?php _e('You can hide the WhatsApp button under products in the selected categories.', 'oneclick-wa-order'); ?></p>
+                                <p><?php esc_html_e('You can hide the WhatsApp button under products in the selected categories.', 'oneclick-wa-order'); ?></p>
                             </td>
                         </tr>
                         <!-- Archive Pages Options -->
                         <tr class="wa_order_remove_add_btn">
                             <!-- For Categories -->
                             <th scope="row">
-                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php _e('Also Hide on Category Archive Page(s)?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php esc_html_e('Also Hide on Category Archive Page(s)?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_exlude_shop_product_cats_archive" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_exlude_shop_product_cats_archive'), 'yes'); ?>>
-                                <?php _e('This will hide WhatsApp Button on the selected category archive page(s).', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide WhatsApp Button on the selected category archive page(s).', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
                         <!-- Select Tags -->
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php _e('Hide WA Button Under Products in Tags', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php esc_html_e('Hide WA Button Under Products in Tags', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <select multiple="multiple" name="wa_order_option_exlude_shop_product_tags[]" class="postform octo-category-filter" style="width: 50%;">
@@ -1519,24 +2034,24 @@ function wa_order_create_admin_page()
                                     foreach ($tag_query as $term) {
                                         $selected = in_array($term->term_id, $option_array) ? ' selected="selected" ' : '';
                                     ?>
-                                        <option value="<?php echo esc_attr($term->term_id); ?>" <?php echo $selected; ?>>
+                                        <option value="<?php echo esc_attr($term->term_id); ?>" <?php echo esc_attr($selected); ?>>
                                             <?php echo esc_html(ucwords($term->name)) . ' (' . esc_html($term->count) . ')'; ?>
                                         </option>
                                     <?php
                                     }
                                     ?>
                                 </select>
-                                <p><?php _e('You can hide the WhatsApp button under products in the selected tags.', 'oneclick-wa-order'); ?></p>
+                                <p><?php esc_html_e('You can hide the WhatsApp button under products in the selected tags.', 'oneclick-wa-order'); ?></p>
                             </td>
                         </tr>
                         <!-- For Tags -->
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php _e('Also Hide on Tag Archive Page(s)?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php esc_html_e('Also Hide on Tag Archive Page(s)?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_exlude_shop_product_tags_archive" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_exlude_shop_product_tags_archive'), 'yes'); ?>>
-                                <?php _e('This will hide WhatsApp Button on the selected tag archive page(s).', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide WhatsApp Button on the selected tag archive page(s).', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
                     </tbody>
@@ -1546,28 +2061,28 @@ function wa_order_create_admin_page()
                 <!-- Cart Display Options -->
                 <table class="form-table">
                     <tbody>
-                        <h2 class="section_wa_order"><?php _e('Cart Page', 'oneclick-wa-order'); ?></h2>
-                        <p><?php _e('The following options will be only effective on cart page.', 'oneclick-wa-order'); ?></p>
+                        <h2 class="section_wa_order"><?php esc_html_e('Cart Page', 'oneclick-wa-order'); ?></h2>
+                        <p><?php esc_html_e('The following options will be only effective on cart page.', 'oneclick-wa-order'); ?></p>
 
                         <!-- Hide Button on Desktop -->
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php _e('Hide Button on Desktop?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php esc_html_e('Hide Button on Desktop?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_display_option_cart_hide_desktop" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_display_option_cart_hide_desktop'), 'yes'); ?>>
-                                <?php _e('This will hide WhatsApp Button on Desktop.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide WhatsApp Button on Desktop.', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
 
                         <!-- Hide Button on Mobile -->
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php _e('Hide Button on Mobile?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php esc_html_e('Hide Button on Mobile?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_display_option_cart_hide_mobile" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_display_option_cart_hide_mobile'), 'yes'); ?>>
-                                <?php _e('This will hide WhatsApp Button on Mobile.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide WhatsApp Button on Mobile.', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
                     </tbody>
@@ -1577,28 +2092,28 @@ function wa_order_create_admin_page()
                 <!-- Checkout / Thank You Page Display Options -->
                 <table class="form-table">
                     <tbody>
-                        <h2 class="section_wa_order"><?php _e('Thank You Page', 'oneclick-wa-order'); ?></h2>
-                        <p><?php _e('The following options will be only effective on thank you page.', 'oneclick-wa-order'); ?></p>
+                        <h2 class="section_wa_order"><?php esc_html_e('Thank You Page', 'oneclick-wa-order'); ?></h2>
+                        <p><?php esc_html_e('The following options will be only effective on thank you page.', 'oneclick-wa-order'); ?></p>
 
                         <!-- Hide Button on Desktop -->
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php _e('Hide Button on Desktop?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php esc_html_e('Hide Button on Desktop?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_display_option_checkout_hide_desktop" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_display_option_checkout_hide_desktop'), 'yes'); ?>>
-                                <?php _e('This will hide WhatsApp Button on Desktop.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide WhatsApp Button on Desktop.', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
 
                         <!-- Hide Button on Mobile -->
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php _e('Hide Button on Mobile?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_add_label" for="wa_order_remove_add_btn"><b><?php esc_html_e('Hide Button on Mobile?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_display_option_checkout_hide_mobile" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_display_option_checkout_hide_mobile'), 'yes'); ?>>
-                                <?php _e('This will hide WhatsApp Button on Mobile.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will hide WhatsApp Button on Mobile.', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
                     </tbody>
@@ -1608,19 +2123,41 @@ function wa_order_create_admin_page()
                 <!-- Miscellaneous Display Options -->
                 <table class="form-table">
                     <tbody>
-                        <h2 class="section_wa_order"><?php _e('Miscellaneous', 'oneclick-wa-order'); ?></h2>
-                        <p><?php _e('An additional option you might need.', 'oneclick-wa-order'); ?></p>
+                        <h2 class="section_wa_order"><?php esc_html_e('Miscellaneous', 'oneclick-wa-order'); ?></h2>
+                        <p><?php esc_html_e('An additional option you might need.', 'oneclick-wa-order'); ?></p>
 
                         <!-- Convert Phone Number into WhatsApp in Order Details -->
                         <tr class="wa_order_remove_add_btn">
                             <th scope="row">
-                                <label class="wa_order_remove_add_label" for="wa_order_convert_phone"><b><?php _e('Convert Phone Number into WhatsApp in Order Details?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_add_label" for="wa_order_convert_phone"><b><?php esc_html_e('Convert Phone Number into WhatsApp in Order Details?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_convert_phone_order_details" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_convert_phone_order_details'), 'yes'); ?>>
-                                <?php _e('This will convert phone number link into WhatsApp chat link.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will convert phone number link into WhatsApp chat link.', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
+
+                        <!-- Custom WhatsApp Message in Backend Order Details -->
+                        <tr class="wa_order_message">
+                            <th scope="row">
+                                <label class="wa_order_message_label" for="message_wbw"><b><?php esc_html_e('Custom Message', 'oneclick-wa-order'); ?></b></label>
+                            </th>
+                            <td>
+                                <textarea name="wa_order_option_custom_message_backend_order_details" class="wa_order_input_areatext" rows="5" placeholder="<?php esc_html_e('e.g. Hello, I\'d like to follow up on your order.', 'oneclick-wa-order'); ?>"><?php echo esc_textarea(get_option('wa_order_option_custom_message_backend_order_details')); ?></textarea>
+                                <p class="description">
+                                    <?php
+                                    /* translators: 1. example custom message inside <code> tags */
+                                    echo sprintf(
+                                        /* translators: 1. example custom message */
+                                        esc_html__('Enter custom message, %1$se.g. Hello, I\'d like to follow up on your order.%2$s', 'oneclick-wa-order'),
+                                        '<code>', // opening <code> tag
+                                        '</code>' // closing <code> tag
+                                    );
+                                    ?>
+                                </p>
+                            </td>
+                        </tr>
+
                     </tbody>
                 </table>
                 <!-- END of Miscellaneous Display Options -->
@@ -1633,31 +2170,44 @@ function wa_order_create_admin_page()
                 <?php settings_errors(); ?>
                 <?php settings_fields('wa-order-settings-group-shop-loop'); ?>
                 <?php do_settings_sections('wa-order-settings-group-shop-loop'); ?>
-                <h2 class="section_wa_order"><?php _e('WhatsApp Button on Shop Page', 'oneclick-wa-order'); ?></h2>
+                <h2 class="section_wa_order"><?php esc_html_e('WhatsApp Button on Shop Page', 'oneclick-wa-order'); ?></h2>
                 <p>
-                    <?php _e('Add custom WhatsApp button on <strong>Shop</strong> page or product loop page right under / besides of the <strong>Add to Cart</strong> button.', 'oneclick-wa-order'); ?>
+                    <?php
+                    /* translators: 1. opening <strong> tag for "Shop", 2. closing </strong> tag, 3. opening <strong> tag for "Add to Cart", 4. closing </strong> tag */
+                    echo sprintf(
+                        /* translators: 1. opening <strong> tag for "Shop" */
+                        /* translators: 2. closing </strong> tag */
+                        /* translators: 3. opening <strong> tag for "Add to Cart" */
+                        /* translators: 4. closing </strong> tag */
+                        esc_html__('Add custom WhatsApp button on %1$sShop%2$s page or product loop page right under / besides the %3$sAdd to Cart%4$s button.', 'oneclick-wa-order'),
+                        '<strong>', // opening <strong> tag for "Shop"
+                        '</strong>', // closing <strong> tag for "Shop"
+                        '<strong>', // opening <strong> tag for "Add to Cart"
+                        '</strong>' // closing <strong> tag for "Add to Cart"
+                    );
+                    ?>
                     <br />
                 </p>
                 <table class="form-table">
                     <tbody>
-                        <h2 class="section_wa_order"><?php _e('Shop Loop Page', 'oneclick-wa-order'); ?></h2>
-                        <p><?php _e('The following options will be only effective on shop loop page.', 'oneclick-wa-order'); ?></p>
+                        <h2 class="section_wa_order"><?php esc_html_e('Shop Loop Page', 'oneclick-wa-order'); ?></h2>
+                        <p><?php esc_html_e('The following options will be only effective on shop loop page.', 'oneclick-wa-order'); ?></p>
 
                         <!-- Display Button on Shop Page -->
                         <tr class="wa_order_target">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Display button on Shop page?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Display button on Shop page?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_enable_button_shop_loop" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_enable_button_shop_loop'), 'yes'); ?>>
-                                <?php _e('This will display WhatsApp button on Shop page', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will display WhatsApp button on Shop page', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
 
                         <!-- WhatsApp Number Dropdown -->
                         <tr>
                             <th scope="row">
-                                <label><?php _e('WhatsApp Number', 'oneclick-wa-order') ?></label>
+                                <label><?php esc_html_e('WhatsApp Number', 'oneclick-wa-order') ?></label>
                             </th>
                             <td>
                                 <?php wa_order_phone_numbers_dropdown(
@@ -1667,7 +2217,24 @@ function wa_order_create_admin_page()
                                     )
                                 ) ?>
                                 <p class="description">
-                                    <?php _e('WhatsApp number is <strong style="color:red;">required</strong>. Please set it on <a href="edit.php?post_type=wa-order-numbers"><strong>Numbers</strong></a> tab.', 'oneclick-wa-order'); ?>
+                                    <?php
+                                    /* translators: 1. opening <strong> tag with inline red color style for "required", 2. closing </strong> tag, 3. opening <a> tag for "Numbers", 4. closing </a> tag */
+                                    echo wp_kses(
+                                        sprintf(
+                                            /* translators: 1. opening <strong> tag with inline red color style for "required", 2. closing </strong> tag, 3. opening <a> tag for "Numbers", 4. closing </a> tag */
+                                            __('WhatsApp number is %1$srequired%2$s. Please set it on the %3$sNumbers%4$s tab.', 'oneclick-wa-order'),
+                                            '<strong style="color:red;">', // opening <strong> tag with red color style
+                                            '</strong>', // closing <strong> tag
+                                            '<a href="edit.php?post_type=wa-order-numbers"><strong>', // opening <a> and <strong> tag
+                                            '</strong></a>' // closing <a> and <strong> tag
+                                        ),
+                                        array(
+                                            'strong' => array('style' => array()), // Allow strong with style attribute
+                                            'a' => array('href' => array(), 'target' => array()) // Allow a tag with href and target attributes
+                                        )
+                                    );
+                                    ?>
+
                                 </p>
                             </td>
                         </tr>
@@ -1675,66 +2242,85 @@ function wa_order_create_admin_page()
                         <!-- Hide Add to Cart Button -->
                         <tr class="wa_order_target">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Hide Add to Cart button?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Hide Add to Cart button?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_hide_atc_shop_loop" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_hide_atc_shop_loop'), 'yes'); ?>>
-                                <?php _e('This will only display WhatsApp button and hide the <code>Add to Cart</code> button', 'oneclick-wa-order'); ?>
+                                <?php
+                                /* translators: 1. <code> tag for "Add to Cart" */
+                                echo sprintf(
+                                    /* translators: 1. opening <code> tag for "Add to Cart" */
+                                    /* translators: 2. closing </code> tag */
+                                    esc_html__('This will only display the WhatsApp button and hide the %1$sAdd to Cart%2$s button.', 'oneclick-wa-order'),
+                                    '<code>', // opening <code> tag
+                                    '</code>' // closing <code> tag
+                                );
+                                ?>
                             </td>
                         </tr>
 
                         <!-- Text on Button -->
                         <tr class="wa_order_btn_text">
                             <th scope="row">
-                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php _e('Text on Button', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php esc_html_e('Text on Button', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
-                                <input type="text" name="wa_order_option_button_text_shop_loop" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_button_text_shop_loop')); ?>" placeholder="<?php _e('e.g. Buy via WhatsApp', 'oneclick-wa-order'); ?>">
+                                <input type="text" name="wa_order_option_button_text_shop_loop" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_button_text_shop_loop')); ?>" placeholder="<?php esc_html_e('e.g. Buy via WhatsApp', 'oneclick-wa-order'); ?>">
                             </td>
                         </tr>
 
                         <!-- Custom Message -->
                         <tr class="wa_order_message">
                             <th scope="row">
-                                <label class="wa_order_message_label" for="message_wbw"><b><?php _e('Custom Message', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_message_label" for="message_wbw"><b><?php esc_html_e('Custom Message', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
-                                <textarea name="wa_order_option_custom_message_shop_loop" class="wa_order_input_areatext" rows="5" placeholder="<?php _e('e.g. Hello, I want to purchase:', 'oneclick-wa-order'); ?>"><?php echo esc_textarea(get_option('wa_order_option_custom_message_shop_loop')); ?></textarea>
+                                <textarea name="wa_order_option_custom_message_shop_loop" class="wa_order_input_areatext" rows="5" placeholder="<?php esc_html_e('e.g. Hello, I want to purchase:', 'oneclick-wa-order'); ?>"><?php echo esc_textarea(get_option('wa_order_option_custom_message_shop_loop')); ?></textarea>
                                 <p class="description">
-                                    <?php _e('Enter custom message, e.g. <code>Hello, I want to purchase:</code>', 'oneclick-wa-order'); ?></p>
+                                    <?php
+                                    /* translators: 1. <code> tag for the example custom message */
+                                    echo sprintf(
+                                        /* translators: 1. opening <code> tag for example message */
+                                        /* translators: 2. closing </code> tag */
+                                        esc_html__('Enter custom message, e.g. %1$sHello, I want to purchase:%2$s', 'oneclick-wa-order'),
+                                        '<code>', // opening <code> tag
+                                        '</code>' // closing <code> tag
+                                    );
+                                    ?>
+                                </p>
                             </td>
                         </tr>
 
                         <!-- Exclude Price Option -->
                         <tr class="wa_order_target">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Exclude Price?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Exclude Price?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_shop_loop_exclude_price" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_shop_loop_exclude_price'), 'yes'); ?>>
-                                <?php _e('This will remove product price from WhatsApp message sent from Shop loop page.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will remove product price from WhatsApp message sent from Shop loop page.', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
 
                         <!-- Hide Product URL Option -->
                         <tr class="wa_order_target">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Remove Product URL?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Remove Product URL?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_shop_loop_hide_product_url" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_shop_loop_hide_product_url'), 'yes'); ?>>
-                                <?php _e('This will remove product URL from WhatsApp message sent from Shop loop page.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will remove product URL from WhatsApp message sent from Shop loop page.', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
 
                         <!-- Open in New Tab Option -->
                         <tr class="wa_order_target">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Open in New Tab?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Open in New Tab?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_shop_loop_open_new_tab" class="wa_order_input_check" value="_blank" <?php checked(get_option('wa_order_option_shop_loop_open_new_tab'), '_blank'); ?>>
-                                <?php _e('Yes, Open in New Tab', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('Yes, Open in New Tab', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
                     </tbody>
@@ -1748,31 +2334,44 @@ function wa_order_create_admin_page()
                 <?php settings_errors(); ?>
                 <?php settings_fields('wa-order-settings-group-cart-options'); ?>
                 <?php do_settings_sections('wa-order-settings-group-cart-options'); ?>
-                <h2 class="section_wa_order"><?php _e('WhatsApp Button on Cart Page', 'oneclick-wa-order'); ?></h2>
+                <h2 class="section_wa_order"><?php esc_html_e('WhatsApp Button on Cart Page', 'oneclick-wa-order'); ?></h2>
                 <p>
-                    <?php _e('Add custom WhatsApp button on <strong>Cart</strong> page right under the <strong>Proceed to Checkout</strong> button.', 'oneclick-wa-order'); ?>
+                    <?php
+                    /* translators: 1. opening <strong> tag for "Cart", 2. closing </strong> tag, 3. opening <strong> tag for "Proceed to Checkout", 4. closing </strong> tag */
+                    echo sprintf(
+                        /* translators: 1. opening <strong> tag for "Cart" */
+                        /* translators: 2. closing </strong> tag */
+                        /* translators: 3. opening <strong> tag for "Proceed to Checkout" */
+                        /* translators: 4. closing </strong> tag */
+                        esc_html__('Add custom WhatsApp button on %1$sCart%2$s page right under the %3$sProceed to Checkout%4$s button.', 'oneclick-wa-order'),
+                        '<strong>', // opening <strong> tag for "Cart"
+                        '</strong>', // closing <strong> tag for "Cart"
+                        '<strong>', // opening <strong> tag for "Proceed to Checkout"
+                        '</strong>' // closing <strong> tag for "Proceed to Checkout"
+                    );
+                    ?>
                     <br />
                 </p>
                 <table class="form-table">
                     <tbody>
-                        <h2 class="section_wa_order"><?php _e('Cart Page', 'oneclick-wa-order'); ?></h2>
-                        <p><?php _e('The following options will be only effective on cart page.', 'oneclick-wa-order'); ?></p>
+                        <h2 class="section_wa_order"><?php esc_html_e('Cart Page', 'oneclick-wa-order'); ?></h2>
+                        <p><?php esc_html_e('The following options will be only effective on cart page.', 'oneclick-wa-order'); ?></p>
 
                         <!-- Display Button on Cart Page -->
                         <tr class="wa_order_target">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Display button on Cart page?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Display button on Cart page?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_add_button_to_cart" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_add_button_to_cart'), 'yes'); ?>>
-                                <?php _e('This will display WhatsApp button on Cart page', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will display WhatsApp button on Cart page', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
 
                         <!-- WhatsApp Number Dropdown -->
                         <tr>
                             <th scope="row">
-                                <label><?php _e('WhatsApp Number', 'oneclick-wa-order') ?></label>
+                                <label><?php esc_html_e('WhatsApp Number', 'oneclick-wa-order') ?></label>
                             </th>
                             <td>
                                 <?php wa_order_phone_numbers_dropdown(
@@ -1782,7 +2381,23 @@ function wa_order_create_admin_page()
                                     )
                                 ) ?>
                                 <p class="description">
-                                    <?php _e('WhatsApp number is <strong style="color:red;">required</strong>. Please set it on <a href="edit.php?post_type=wa-order-numbers"><strong>Numbers</strong></a> tab.', 'oneclick-wa-order'); ?>
+                                    <?php
+                                    /* translators: 1. opening <strong> tag with inline red color style for "required", 2. closing </strong> tag, 3. opening <a> tag for "Numbers", 4. closing </a> tag */
+                                    echo wp_kses(
+                                        sprintf(
+                                            /* translators: 1. opening <strong> tag with inline red color style for "required", 2. closing </strong> tag, 3. opening <a> tag for "Numbers", 4. closing </a> tag */
+                                            __('WhatsApp number is %1$srequired%2$s. Please set it on the %3$sNumbers%4$s tab.', 'oneclick-wa-order'),
+                                            '<strong style="color:red;">', // opening <strong> tag with red color style
+                                            '</strong>', // closing <strong> tag
+                                            '<a href="edit.php?post_type=wa-order-numbers"><strong>', // opening <a> and <strong> tag
+                                            '</strong></a>' // closing <a> and <strong> tag
+                                        ),
+                                        array(
+                                            'strong' => array('style' => array()), // Allow strong with style attribute
+                                            'a' => array('href' => array(), 'target' => array()) // Allow a tag with href and target attributes
+                                        )
+                                    );
+                                    ?>
                                 </p>
                             </td>
                         </tr>
@@ -1790,66 +2405,94 @@ function wa_order_create_admin_page()
                         <!-- Hide Proceed to Checkout Button -->
                         <tr class="wa_order_target">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Hide Proceed to Checkout button?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Hide Proceed to Checkout button?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_cart_hide_checkout" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_cart_hide_checkout'), 'yes'); ?>>
-                                <?php _e('This will only display WhatsApp button and hide the <code>Proceed to Checkout</code> button', 'oneclick-wa-order'); ?>
+                                <?php
+                                /* translators: 1. <code> tag for "Proceed to Checkout" */
+                                echo sprintf(
+                                    /* translators: 1. <code> tag for "Proceed to Checkout" */
+                                    esc_html__('This will only display WhatsApp button and hide the %1$sProceed to Checkout%2$s button', 'oneclick-wa-order'),
+                                    '<code>', // opening <code> tag
+                                    '</code>' // closing <code> tag
+                                );
+                                ?>
                             </td>
                         </tr>
 
                         <!-- Text on Button -->
                         <tr class="wa_order_btn_text">
                             <th scope="row">
-                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php _e('Text on Button', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_btn_txt_label" for="text_button"><b><?php esc_html_e('Text on Button', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
-                                <input type="text" name="wa_order_option_cart_button_text" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_cart_button_text')); ?>" placeholder="<?php _e('e.g. Complete Order via WhatsApp', 'oneclick-wa-order'); ?>">
+                                <input type="text" name="wa_order_option_cart_button_text" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_cart_button_text')); ?>" placeholder="<?php esc_html_e('e.g. Complete Order via WhatsApp', 'oneclick-wa-order'); ?>">
                             </td>
                         </tr>
 
                         <!-- Custom Message -->
                         <tr class="wa_order_message">
                             <th scope="row">
-                                <label class="wa_order_message_label" for="message_wbw"><b><?php _e('Custom Message', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_message_label" for="message_wbw"><b><?php esc_html_e('Custom Message', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
-                                <textarea name="wa_order_option_cart_custom_message" class="wa_order_input_areatext" rows="5" placeholder="<?php _e('e.g. Hello, I want to purchase the item(s) below:', 'oneclick-wa-order'); ?>"><?php echo esc_textarea(get_option('wa_order_option_cart_custom_message')); ?></textarea>
+                                <textarea name="wa_order_option_cart_custom_message" class="wa_order_input_areatext" rows="5" placeholder="<?php esc_html_e('e.g. Hello, I want to purchase the item(s) below:', 'oneclick-wa-order'); ?>"><?php echo esc_textarea(get_option('wa_order_option_cart_custom_message')); ?></textarea>
                                 <p class="description">
-                                    <?php _e('Enter custom message, e.g. <code>Hello, I want to purchase the item(s) below:</code>', 'oneclick-wa-order'); ?></p>
+                                    <?php
+                                    /* translators: 1. <code> tag for the example message */
+                                    echo sprintf(
+                                        /* translators: 1. <code> tag for the example message */
+                                        esc_html__('Enter custom message, e.g. %1$sHello, I want to purchase the item(s) below:%2$s', 'oneclick-wa-order'),
+                                        '<code>', // opening <code> tag
+                                        '</code>' // closing <code> tag
+                                    );
+                                    ?>
+                                </p>
                             </td>
                         </tr>
 
                         <!-- Remove Product URL Option -->
                         <tr class="wa_order_target">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Remove Product URL?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Remove Product URL?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_cart_hide_product_url" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_cart_hide_product_url'), 'yes'); ?>>
-                                <?php _e('This will remove product URL from WhatsApp message sent from Cart page.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('This will remove product URL from WhatsApp message sent from Cart page.', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
 
                         <!-- Include Product Variation Option -->
                         <tr class="wa_order_target">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Include Product Variation?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Include Product Variation?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_cart_enable_variations" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_cart_enable_variations'), 'yes'); ?>>
-                                <?php _e('This will include the product variation in the message. Note: Works only if the variation stored by WooCommerce, might not all.', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('The product variation will be included in the message if it is stored by WooCommerce, might not all.', 'oneclick-wa-order'); ?>
+                            </td>
+                        </tr>
+
+                        <!-- Include Tax Option -->
+                        <tr class="wa_order_target">
+                            <th scope="row">
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Include Tax?', 'oneclick-wa-order'); ?></b></label>
+                            </th>
+                            <td>
+                                <input type="checkbox" name="wa_order_option_cart_include_tax" class="wa_order_input_check" value="yes" <?php checked(get_option('wa_order_option_cart_include_tax'), 'yes'); ?>>
+                                <?php esc_html_e('This will include the tax in the message.', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
 
                         <!-- Open in New Tab Option -->
                         <tr class="wa_order_target">
                             <th scope="row">
-                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php _e('Open in New Tab?', 'oneclick-wa-order'); ?></b></label>
+                                <label class="wa_order_remove_btn_label" for="wa_order_remove_wa_order_btn"><b><?php esc_html_e('Open in New Tab?', 'oneclick-wa-order'); ?></b></label>
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_cart_open_new_tab" class="wa_order_input_check" value="_blank" <?php checked(get_option('wa_order_option_cart_open_new_tab'), '_blank'); ?>>
-                                <?php _e('Yes, Open in New Tab', 'oneclick-wa-order'); ?>
+                                <?php esc_html_e('Yes, Open in New Tab', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
                     </tbody>
@@ -1891,11 +2534,27 @@ function wa_order_create_admin_page()
                                 <?php wa_order_phone_numbers_dropdown(
                                     array(
                                         'name'      => 'wa_order_selected_wa_number_thanks',
-                                        'selected'  => esc_attr(get_option('wa_order_selected_wa_number_thanks')),
+                                        'selected'  => get_option('wa_order_selected_wa_number_thanks'),
                                     )
                                 ); ?>
                                 <p class="description">
-                                    <?php echo esc_html__('WhatsApp number is required. Please set it on', 'oneclick-wa-order') . ' <a href="edit.php?post_type=wa-order-numbers"><strong>' . esc_html__('Numbers', 'oneclick-wa-order') . '</strong></a> ' . esc_html__('tab.', 'oneclick-wa-order'); ?>
+                                    <?php
+                                    /* translators: 1. opening <strong> tag with inline red color style for "required", 2. closing </strong> tag, 3. opening <a> tag for "Numbers", 4. closing </a> tag */
+                                    echo wp_kses(
+                                        sprintf(
+                                            /* translators: 1. opening <strong> tag with inline red color style for "required", 2. closing </strong> tag, 3. opening <a> tag for "Numbers", 4. closing </a> tag */
+                                            __('WhatsApp number is %1$srequired%2$s. Please set it on the %3$sNumbers%4$s tab.', 'oneclick-wa-order'),
+                                            '<strong style="color:red;">', // opening <strong> tag with red color style
+                                            '</strong>', // closing <strong> tag
+                                            '<a href="edit.php?post_type=wa-order-numbers"><strong>', // opening <a> and <strong> tag
+                                            '</strong></a>' // closing <a> and <strong> tag
+                                        ),
+                                        array(
+                                            'strong' => array('style' => array()), // Allow strong with style attribute
+                                            'a' => array('href' => array(), 'target' => array()) // Allow a tag with href and target attributes
+                                        )
+                                    );
+                                    ?>
                                 </p>
                             </td>
                         </tr>
@@ -1960,6 +2619,19 @@ function wa_order_create_admin_page()
                             </td>
                         </tr>
 
+                        <!-- Total Products Label -->
+                        <tr class="wa_order_target">
+                            <th scope="row">
+                                <label for="wa_order_option_custom_thank_you_total_products_label"><?php echo esc_html__('Total Products Label', 'oneclick-wa-order'); ?></label>
+                            </th>
+                            <td>
+                                <input type="text" name="wa_order_option_custom_thank_you_total_products_label" id="wa_order_option_custom_thank_you_total_products_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_custom_thank_you_total_products_label')); ?>" placeholder="<?php echo esc_attr__('e.g. Total Products', 'oneclick-wa-order'); ?>">
+                                <p class="description">
+                                    <?php echo esc_html__('Enter a label for the total number of products. This field is optional and can be left blank to disable it. e.g. Total Products', 'oneclick-wa-order'); ?>
+                                </p>
+                            </td>
+                        </tr>
+
                         <!-- Include Coupon Discount -->
                         <tr class="wa_order_target">
                             <th scope="row">
@@ -1967,7 +2639,7 @@ function wa_order_create_admin_page()
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_custom_thank_you_inclue_coupon" id="wa_order_option_custom_thank_you_inclue_coupon" class="wa_order_input_check" value="yes" <?php checked(esc_attr(get_option('wa_order_option_custom_thank_you_inclue_coupon')), 'yes'); ?>>
-                                <?php echo esc_html__('This will include coupon code and its deduction amount, including a label (the label must be set below if it\'s enabled).', 'oneclick-wa-order'); ?>
+                                <?php echo esc_html__('This includes a coupon code and its associated deduction amount, along with a label if it is enabled.', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
 
@@ -1984,6 +2656,78 @@ function wa_order_create_admin_page()
                             </td>
                         </tr>
 
+                        <!-- Include Order Summary Link -->
+                        <tr class="wa_order_target">
+                            <th scope="row">
+                                <label for="wa_order_option_thank_you_order_summary_link"><?php echo esc_html__('Include Order Summary Link?', 'oneclick-wa-order'); ?></label>
+                            </th>
+                            <td>
+                                <input type="checkbox" name="wa_order_option_thank_you_order_summary_link" id="wa_order_option_thank_you_order_summary_link" class="wa_order_input_check" value="yes" <?php checked(esc_attr(get_option('wa_order_option_thank_you_order_summary_link')), 'yes'); ?>>
+                                <?php echo esc_html__('Include an Order Summary link in the message.', 'oneclick-wa-order'); ?>
+                            </td>
+                        </tr>
+
+                        <!-- Order Summary Label -->
+                        <tr class="wa_order_btn_text">
+                            <th scope="row">
+                                <label for="wa_order_option_thank_you_order_summary_label"><?php echo esc_html__('Order Summary Label', 'oneclick-wa-order'); ?></label>
+                            </th>
+                            <td>
+                                <input type="text" name="wa_order_option_thank_you_order_summary_label" id="wa_order_option_thank_you_order_summary_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_thank_you_order_summary_label')); ?>" placeholder="<?php echo esc_attr__('e.g. Check Order Summary:', 'oneclick-wa-order'); ?>">
+                                <p class="description">
+                                    <?php echo esc_html__('Enter a label for the order summary. e.g. Check Order Summary:', 'oneclick-wa-order'); ?>
+                                </p>
+                            </td>
+                        </tr>
+
+                        <!-- Include Payment Link -->
+                        <tr class="wa_order_target">
+                            <th scope="row">
+                                <label for="wa_order_option_thank_you_payment_link"><?php echo esc_html__('Include Payment Link?', 'oneclick-wa-order'); ?></label>
+                            </th>
+                            <td>
+                                <input type="checkbox" name="wa_order_option_thank_you_payment_link" id="wa_order_option_thank_you_payment_link" class="wa_order_input_check" value="yes" <?php checked(esc_attr(get_option('wa_order_option_thank_you_payment_link')), 'yes'); ?>>
+                                <?php echo esc_html__('Include the Payment Link in the message.', 'oneclick-wa-order'); ?>
+                            </td>
+                        </tr>
+
+                        <!-- Payment Link Label -->
+                        <tr class="wa_order_btn_text">
+                            <th scope="row">
+                                <label for="wa_order_option_thank_you_payment_link_label"><?php echo esc_html__('Payment Link Label', 'oneclick-wa-order'); ?></label>
+                            </th>
+                            <td>
+                                <input type="text" name="wa_order_option_thank_you_payment_link_label" id="wa_order_option_thank_you_payment_link_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_thank_you_payment_link_label')); ?>" placeholder="<?php echo esc_attr__('e.g. Payment Link:', 'oneclick-wa-order'); ?>">
+                                <p class="description">
+                                    <?php echo esc_html__('Enter a label for the payment link. e.g. Payment Link:', 'oneclick-wa-order'); ?>
+                                </p>
+                            </td>
+                        </tr>
+
+                        <!-- Include View Order Link -->
+                        <tr class="wa_order_target">
+                            <th scope="row">
+                                <label for="wa_order_option_thank_you_view_order_link"><?php echo esc_html__('Include View Order Link?', 'oneclick-wa-order'); ?></label>
+                            </th>
+                            <td>
+                                <input type="checkbox" name="wa_order_option_thank_you_view_order_link" id="wa_order_option_thank_you_view_order_link" class="wa_order_input_check" value="yes" <?php checked(esc_attr(get_option('wa_order_option_thank_you_view_order_link')), 'yes'); ?>>
+                                <?php echo esc_html__('Note: It only works if a customer already has an account.', 'oneclick-wa-order'); ?>
+                            </td>
+                        </tr>
+
+                        <!-- View Order Label -->
+                        <tr class="wa_order_btn_text">
+                            <th scope="row">
+                                <label for="wa_order_option_thank_you_view_order_label"><?php echo esc_html__('View Order Label', 'oneclick-wa-order'); ?></label>
+                            </th>
+                            <td>
+                                <input type="text" name="wa_order_option_thank_you_view_order_label" id="wa_order_option_thank_you_view_order_label" class="wa_order_input" value="<?php echo esc_attr(get_option('wa_order_option_thank_you_view_order_label')); ?>" placeholder="<?php echo esc_attr__('e.g. View Order:', 'oneclick-wa-order'); ?>">
+                                <p class="description">
+                                    <?php echo esc_html__('Enter a label for the view order. e.g. View Order:', 'oneclick-wa-order'); ?>
+                                </p>
+                            </td>
+                        </tr>
+
                         <!-- Include Order Number -->
                         <tr class="wa_order_target">
                             <th scope="row">
@@ -1991,7 +2735,7 @@ function wa_order_create_admin_page()
                             </th>
                             <td>
                                 <input type="checkbox" name="wa_order_option_custom_thank_you_order_number" id="wa_order_option_custom_thank_you_order_number" class="wa_order_input_check" value="yes" <?php checked(esc_attr(get_option('wa_order_option_custom_thank_you_order_number')), 'yes'); ?>>
-                                <?php echo esc_html__('This will include the order number including a label (the label must be set below if it\'s enabled).', 'oneclick-wa-order'); ?>
+                                <?php echo esc_html__('The order number will include a label, if enabled.', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
 
@@ -2016,6 +2760,16 @@ function wa_order_create_admin_page()
                             <td>
                                 <input type="checkbox" name="wa_order_option_custom_thank_you_include_sku" id="wa_order_option_custom_thank_you_include_sku" class="wa_order_input_check" value="yes" <?php checked(esc_attr(get_option('wa_order_option_custom_thank_you_include_sku')), 'yes'); ?>>
                                 <?php echo esc_html__('Yes, Include Product SKU', 'oneclick-wa-order'); ?>
+                            </td>
+                        </tr>
+                        <!-- Include Tax -->
+                        <tr class="wa_order_target">
+                            <th scope="row">
+                                <label for="wa_order_option_custom_thank_you_include_tax"><?php echo esc_html__('Include Tax?', 'oneclick-wa-order'); ?></label>
+                            </th>
+                            <td>
+                                <input type="checkbox" name="wa_order_option_custom_thank_you_include_tax" id="wa_order_option_custom_thank_you_include_tax" class="wa_order_input_check" value="yes" <?php checked(esc_attr(get_option('wa_order_option_custom_thank_you_include_tax')), 'yes'); ?>>
+                                <?php echo esc_html__('Yes, Include Tax', 'oneclick-wa-order'); ?>
                             </td>
                         </tr>
 
@@ -2073,7 +2827,9 @@ function wa_order_create_admin_page()
                             <td>
                                 <textarea name="wa_order_gdpr_message" class="wa_order_input_areatext" rows="5" placeholder="<?php echo esc_attr__('e.g. I have read the [gdpr_link]', 'oneclick-wa-order'); ?>"><?php echo esc_textarea(get_option('wa_order_gdpr_message')); ?></textarea>
                                 <p class="description">
-                                    <?php printf(esc_html__('Use %s to display Privacy Policy page link.', 'oneclick-wa-order'), '<code>[gdpr_link]</code>'); ?>
+                                    <?php
+                                    // Translators: %s is the link
+                                    printf(esc_html__('Use %s to display Privacy Policy page link.', 'oneclick-wa-order'), '<code>[gdpr_link]</code>'); ?>
                                 </p>
                             </td>
                         </tr>
@@ -2100,10 +2856,30 @@ function wa_order_create_admin_page()
             <div class="wrap">
                 <div class="feature-section one-col wrap about-wrap">
                     <div class="about-text">
-                        <h4><?php printf(__("<strong>OneClick Chat to Order</strong> is Waiting for Your Feedback", 'oneclick-wa-order')); ?></h>
+                        <h4><?php
+                            /* translators: 1. <strong> tag for "OneClick Chat to Order" */
+                            echo sprintf(
+                                /* translators: 1. opening <strong> tag */
+                                esc_html__('%1$sOneClick Chat to Order%2$s is Waiting for Your Feedback', 'oneclick-wa-order'),
+                                '<strong>', // opening <strong> tag
+                                '</strong>' // closing <strong> tag
+                            );
+                            ?></h4>
                     </div>
                     <div class="indo-about-description">
-                        <?php printf(__("<strong>OneClick Chat to Order</strong> is my second plugin and it's open source. I acknowledge that there are still a lot to fix, here and there, that's why I really need your feedback. <br>Let's get in touch and show some love by <a href=\"https://wordpress.org/support/plugin/oneclick-whatsapp-order/reviews/?rate=5#new-post\" target=\"_blank\"><strong>leaving a review</strong></a>.", 'oneclick-wa-order')); ?>
+                        <?php
+                        /* translators: 1. <strong> tag for "OneClick Chat to Order", 2. <a> tag with href to the review page, 3. closing </a> tag */
+                        echo sprintf(
+                            /* translators: 1. <strong> tag for "OneClick Chat to Order" */
+                            /* translators: 2. opening <a> tag for "leaving a review" */
+                            /* translators: 3. closing <a> tag */
+                            esc_html__('%1$sOneClick Chat to Order%2$s is my second plugin and it\'s open source. I acknowledge that there are still a lot to fix, here and there, that\'s why I really need your feedback. Let\'s get in touch and show some love by %3$sleaving a review%4$s.', 'oneclick-wa-order'),
+                            '<strong>', // opening <strong> tag
+                            '</strong>', // closing <strong> tag
+                            '<a href="https://wordpress.org/support/plugin/oneclick-whatsapp-order/reviews/?rate=5#new-post" target="_blank"><strong>', // opening <a> and <strong> tag
+                            '</strong></a>' // closing <a> and <strong> tag
+                        );
+                        ?>
                     </div>
                     <table class="tg" style="table-layout: fixed; width: 269px">
                         <colgroup>
@@ -2112,48 +2888,58 @@ function wa_order_create_admin_page()
                         </colgroup>
                         <tr>
                             <th class="tg-kiyi">
-                                <?php _e('Author:', 'oneclick-wa-order'); ?></th>
+                                <?php esc_html_e('Author:', 'oneclick-wa-order'); ?></th>
                             <th class="tg-fymr">
-                                <?php _e('Walter Pinem', 'oneclick-wa-order'); ?></th>
+                                <?php esc_html_e('Walter Pinem', 'oneclick-wa-order'); ?></th>
                         </tr>
                         <tr>
                             <td class="tg-kiyi">
-                                <?php _e('Website:', 'oneclick-wa-order'); ?></td>
-                            <td class="tg-fymr"><a href="https://walterpinem.me/" target="_blank">
-                                    <?php _e('walterpinem.me', 'oneclick-wa-order'); ?></a></td>
+                                <?php esc_html_e('Website:', 'oneclick-wa-order'); ?></td>
+                            <td class="tg-fymr"><a href="https://walterpinem.me/" title="<?php esc_attr_e('Visit walterpinem.me', 'oneclick-wa-order'); ?>" target="_blank">
+                                    <?php esc_html_e('walterpinem.me', 'oneclick-wa-order'); ?></a></td>
                         </tr>
                         <tr>
                             <td class="tg-kiyi">
-                            <td class="tg-fymr"><a href="https://walterpinem.me/projects/tools/" target="_blank">
-                                    <?php _e('60+ Free Online Tools', 'oneclick-wa-order'); ?></a></td>
+                            <td class="tg-fymr"><a href="https://walterpinem.com/" title="<?php esc_attr_e('Visit walterpinem.com', 'oneclick-wa-order'); ?>" target="_blank">
+                                    <?php esc_html_e('walterpinem.com', 'oneclick-wa-order'); ?></a></td>
                         </tr>
                         <tr>
                             <td class="tg-kiyi">
-                                <?php _e('Email:', 'oneclick-wa-order'); ?></td>
-                            <td class="tg-fymr"><a href="mailto:hello@walterpinem.me" target="_blank">
-                                    <?php _e('hello@walterpinem.me', 'oneclick-wa-order'); ?></a></td>
+                            <td class="tg-fymr"><a href="https://www.onlinestorekit.com/" title="<?php esc_attr_e('Online Store Kit', 'oneclick-wa-order'); ?>" target="_blank">
+                                    <?php esc_html_e('Online Store Kit', 'oneclick-wa-order'); ?></a></td>
                         </tr>
                         <tr>
-                            <td class="tg-kiyi"><?php _e('More:', 'oneclick-wa-order'); ?></td>
-                            <td class="tg-fymr"><a href="https://youtu.be/LuURM5vZyB8" target="_blank">
-                                    <?php _e('Complete Tutorial', 'oneclick-wa-order'); ?></a></td>
+                            <td class="tg-kiyi">
+                            <td class="tg-fymr"><a href="https://walterpinem.me/projects/tools/" title="<?php esc_attr_e('65+ Free Online Tools', 'oneclick-wa-order'); ?>" target="_blank">
+                                    <?php esc_html_e('65+ Free Online Tools', 'oneclick-wa-order'); ?></a></td>
+                        </tr>
+                        <tr>
+                            <td class="tg-kiyi">
+                                <?php esc_html_e('Email:', 'oneclick-wa-order'); ?></td>
+                            <td class="tg-fymr"><a href="mailto:hello@walterpinem.me" title="<?php esc_attr_e('Send email to hello@walterpinem.me', 'oneclick-wa-order'); ?>" target="_blank">
+                                    <?php esc_html_e('hello@walterpinem.me', 'oneclick-wa-order'); ?></a></td>
+                        </tr>
+                        <tr>
+                            <td class="tg-kiyi"><?php esc_html_e('More:', 'oneclick-wa-order'); ?></td>
+                            <td class="tg-fymr"><a href="https://youtu.be/LuURM5vZyB8" title="<?php esc_attr_e('Complete Youtube Tutorial', 'oneclick-wa-order'); ?>" target="_blank">
+                                    <?php esc_html_e('Complete Tutorial', 'oneclick-wa-order'); ?></a></td>
                         </tr>
                         <tr>
                             <td class="tg-kiyi" rowspan="3"></td>
-                            <td class="tg-fymr"><a href="https://walterpinem.me/projects/contact/" target="_blank">
-                                    <?php _e('Support & Feature Request', 'oneclick-wa-order'); ?></a></td>
+                            <td class="tg-fymr"><a href="https://walterpinem.me/projects/contact/" title="<?php esc_attr_e('Support & Feature Request', 'oneclick-wa-order'); ?>" target="_blank">
+                                    <?php esc_html_e('Support & Feature Request', 'oneclick-wa-order'); ?></a></td>
                         </tr>
                         <tr>
                             <td class="tg-kiyi" rowspan="3"></td>
-                            <td class="tg-fymr"><a href="https://www.paypal.me/WalterPinem" target="_blank">
-                                    <?php _e('Donate', 'oneclick-wa-order'); ?></a></td>
+                            <td class="tg-fymr"><a href="https://www.paypal.me/WalterPinem" title="<?php esc_attr_e('Buy Me a Coffee?', 'oneclick-wa-order'); ?>" target="_blank">
+                                    <?php esc_html_e('Donate', 'oneclick-wa-order'); ?></a></td>
                         </tr>
                     </table>
                     <br>
                     <hr>
                     <?php echo do_shortcode("[donate]"); ?>
                     <center>
-                        <p><?php printf(__("Created with ❤ and ☕ in Central Jakarta, Indonesia by <a href=\"https://walterpinem.me\" target=\"_blank\"><strong>Walter Pinem</strong></a>", 'oneclick-wa-order')); ?></p>
+                        <p><?php echo wp_kses_post("Created with ❤ and ☕ in Central Jakarta, Indonesia by <a href=\"https://walterpinem.me\" target=\"_blank\"><strong>Walter Pinem</strong></a>", 'oneclick-wa-order'); ?></p>
                     </center>
                 </div>
             </div>
@@ -2199,7 +2985,7 @@ function wa_order_create_admin_page()
                         <h3 style="text-align: center;"><?php esc_html_e('Watch the Complete Overview and Tutorial', 'oneclick-wa-order'); ?></h3>
                         <div class="headline-feature feature-video">
                             <div class='embed-container'>
-                                <iframe src='https://www.youtube.com/embed/?listType=playlist&list=PLwazGJFvaLnBTOw4pNvPcsFW1ls4tn1Uj' frameborder='0' allowfullscreen></iframe>
+                                <iframe width="560" height="315" src="https://www.youtube.com/embed/videoseries?si=P4KW9wnME3q2Mqvj&amp;list=PLwazGJFvaLnBTOw4pNvPcsFW1ls4tn1Uj" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                             </div>
                         </div>
                     </div>
