@@ -3,18 +3,18 @@
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
-
 /**
- * OneClick Chat to Order Shop Loop Page
+ * OneClick Chat to Order
  *
  * @package     OneClick Chat to Order
  * @author      Walter Pinem <hello@walterpinem.me>
  * @link        https://walterpinem.me/
- * @link        https://onlinestorekit.com/oneclick-chat-to-order/
- * @copyright   Copyright (c) 2019 - 2024, Walter Pinem | Online Store Kit
+ * @link        https://www.onlinestorekit.com/oneclick-chat-to-order/
+ * @copyright   Copyright (c) 2019 - 2025, Walter Pinem | Online Store Kit
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  * @category    Shop Archive Page
- */
+ *
+ ********************************* Shop Archive Page ********************************* */
 
 // Add WhatsApp button under each product on Shop page
 function wa_order_display_button_shop_page()
@@ -52,8 +52,46 @@ function wa_order_display_button_shop_page()
 
 		$class			= apply_filters('wa_order_filter_shop_button_class', sprintf('button add_to_cart_button wa-shop-button product_type_%s', $product->get_type()), $product);
 
-		$price			= wc_get_price_including_tax($product);
-		$format_price	= apply_filters('wa_order_filter_shop_price', html_entity_decode(wp_strip_all_tags(wc_price($price))), $price, $product);
+		// Handle different product types for pricing
+		if ($product->is_type('grouped')) {
+			// For grouped products, get price range
+			$children = array_filter(array_map('wc_get_product', $product->get_children()), 'wc_products_array_filter_visible_grouped');
+			if (!empty($children)) {
+				$child_prices = array();
+				foreach ($children as $child) {
+					if ($child->get_price() !== '') {
+						$child_prices[] = wc_get_price_to_display($child);
+					}
+				}
+				if (!empty($child_prices)) {
+					$min_price = min($child_prices);
+					$max_price = max($child_prices);
+					if ($min_price !== $max_price) {
+						$price_range = wc_price($min_price) . ' – ' . wc_price($max_price);
+					} else {
+						$price_range = wc_price($min_price);
+					}
+					$format_price = apply_filters('wa_order_filter_shop_price', html_entity_decode(wp_strip_all_tags($price_range)), $price_range, $product);
+				} else {
+					$format_price = apply_filters('wa_order_filter_shop_price', '', '', $product);
+				}
+			} else {
+				$format_price = apply_filters('wa_order_filter_shop_price', '', '', $product);
+			}
+			// For grouped products, regular and sale prices don't apply in the traditional sense
+			$format_regular_price = $format_price;
+			$format_sale_price = '';
+		} else {
+			// For other product types (simple, variable, etc.)
+			$price			= wc_get_price_including_tax($product);
+			$format_price	= apply_filters('wa_order_filter_shop_price', html_entity_decode(wp_strip_all_tags(wc_price($price))), $price, $product);
+
+			// Regular and Sale Price handling for shop loop
+			$regular_price = wc_price($product->get_regular_price());
+			$format_regular_price = html_entity_decode(wp_strip_all_tags($regular_price));
+			$sale_price = wc_price($product->get_sale_price());
+			$format_sale_price = html_entity_decode(wp_strip_all_tags($sale_price));
+		}
 
 		// Labels
 		$price_label	= apply_filters('wa_order_filter_shop_price_label', get_option('wa_order_option_price_label', 'Price'));
@@ -75,8 +113,23 @@ function wa_order_display_button_shop_page()
 		if ($excludeprice === 'yes') {
 			$final_message .= "";
 		} else {
-			// $final_message .= "%0A*$encode_price_label:*%20$currency$encode_price";
-			$final_message .= "%0A*$encode_price_label:*%20$format_price"; // new price format
+			// Check if "Show Regular & Sale Prices" option is enabled
+			$show_regular_sale_prices = apply_filters('wa_order_filter_shop_show_regular_sale_prices', get_option('wa_order_option_shop_loop_show_regular_sale_prices', 'no'));
+
+			if ($show_regular_sale_prices === 'yes') {
+				// Check if product is actually on sale and has a valid sale price
+				if ($product->is_on_sale() && $product->get_sale_price() && !empty($product->get_sale_price())) {
+					// Product is on sale - show both regular (strikethrough) and sale price
+					$encoded_price = "~" . urlencode($format_regular_price) . "~ " . urlencode($format_sale_price);
+				} else {
+					// Product is not on sale or sale price is empty - show only regular price
+					$encoded_price = urlencode($format_regular_price);
+				}
+				$final_message .= "%0A*$encode_price_label:*%20$encoded_price";
+			} else {
+				// Use the current/effective price (default behavior)
+				$final_message .= "%0A*$encode_price_label:*%20$format_price";
+			}
 		}
 
 		// Remove product URL

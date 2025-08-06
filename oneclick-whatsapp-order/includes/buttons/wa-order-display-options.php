@@ -1,4 +1,20 @@
 <?php
+// Prevent direct access
+if (!defined('ABSPATH')) {
+	exit; // Exit if accessed directly
+}
+/**
+ * OneClick Chat to Order
+ *
+ * @package     OneClick Chat to Order
+ * @author      Walter Pinem <hello@walterpinem.me>
+ * @link        https://walterpinem.me/
+ * @link        https://www.onlinestorekit.com/oneclick-chat-to-order/
+ * @copyright   Copyright (c) 2019 - 2025, Walter Pinem | Online Store Kit
+ * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
+ * @category    Display & Customization Settings
+ *
+ ********************************* Display & Customization Settings ********************************* */
 
 // Hide WhatsApp button on selected pages
 add_action('wp_head', 'wa_order_display_options');

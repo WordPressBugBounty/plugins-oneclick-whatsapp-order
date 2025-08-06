@@ -3,18 +3,18 @@
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
-
 /**
- * OneClick Chat to Order Single Product Editor Screen
+ * OneClick Chat to Order
  *
  * @package     OneClick Chat to Order
  * @author      Walter Pinem <hello@walterpinem.me>
  * @link        https://walterpinem.me/
- * @link        https://onlinestorekit.com/oneclick-chat-to-order/
- * @copyright   Copyright (c) 2019 - 2024, Walter Pinem | Online Store Kit
+ * @link        https://www.onlinestorekit.com/oneclick-chat-to-order/
+ * @copyright   Copyright (c) 2019 - 2025, Walter Pinem | Online Store Kit
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
- * @category    Admin Page
- */
+ * @category    Product Metabox for WhatsApp
+ *
+ ********************************* Product Metabox for WhatsApp ********************************* */
 
 // Adding a new custom tab to the Products Metabox
 add_filter('woocommerce_product_data_tabs', 'add_oneclick_options_product_data_tab', 99, 1);
@@ -104,6 +104,9 @@ function add_oneclick_options_product_data_fields()
         'label'     => __('Force Show Add to Cart button?', 'oneclick-wa-order')
     ));
 
+    // Add nonce field for security
+    wp_nonce_field('wa_order_metabox_save', 'wa_order_metabox_nonce');
+
     echo '</div>';
 }
 
@@ -116,25 +119,42 @@ function wa_order_save_custom_metabo_data($post_id)
         return;
     }
 
+    // Verify nonce for security
+    if (!isset($_POST['wa_order_metabox_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['wa_order_metabox_nonce'])), 'wa_order_metabox_save')) {
+        return;
+    }
+
+    // Check user capabilities
+    if (!current_user_can('edit_post', $post_id)) {
+        return;
+    }
+
+    // Check if this is an autosave
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
     // Save individual phone number assignment
     if (isset($_POST['_wa_order_phone_number_check'])) {
-        $checked = wp_validate_boolean($_POST['_wa_order_phone_number_check']) ? 'yes' : 'no';
+        $checked = wp_validate_boolean(sanitize_text_field(wp_unslash($_POST['_wa_order_phone_number_check']))) ? 'yes' : 'no';
         update_post_meta($post_id, '_wa_order_phone_number_check', $checked);
+    } else {
+        update_post_meta($post_id, '_wa_order_phone_number_check', 'no');
     }
 
     // Save phone number data
     if (isset($_POST['_wa_order_phone_number'])) {
-        update_post_meta($post_id, '_wa_order_phone_number', esc_attr($_POST['_wa_order_phone_number']));
+        update_post_meta($post_id, '_wa_order_phone_number', sanitize_text_field(wp_unslash($_POST['_wa_order_phone_number'])));
     }
 
     // Save button text data
     if (isset($_POST['_wa_order_button_text'])) {
-        update_post_meta($post_id, '_wa_order_button_text', esc_attr($_POST['_wa_order_button_text']));
+        update_post_meta($post_id, '_wa_order_button_text', sanitize_text_field(wp_unslash($_POST['_wa_order_button_text'])));
     }
 
     // Save custom message data
     if (isset($_POST['_wa_order_custom_message'])) {
-        update_post_meta($post_id, '_wa_order_custom_message', esc_attr($_POST['_wa_order_custom_message']));
+        update_post_meta($post_id, '_wa_order_custom_message', sanitize_textarea_field(wp_unslash($_POST['_wa_order_custom_message'])));
     }
 
     // Save hide or show button data

@@ -1,13 +1,19 @@
 @charset "UTF-8";
+
+/* ========================================
+   GDPR Checkbox Styling
+   ======================================== */
 .wa-order-gdprchk label {
     font-size: inherit;
     display: inline-block;
     position: relative;
     vertical-align: middle;
+    margin-left: 8px;
 }
+
 .wa-order-gdprchk input[type=checkbox] {
     position: relative;
-    bottom: 0px;
+    bottom: 0;
     border: 1px solid #b4b9be;
     background: #fff;
     color: #555;
@@ -15,85 +21,135 @@
     cursor: pointer;
     display: inline-block;
     line-height: 0;
-    width: 1.5rem!important;
-    min-width: 1.5rem!important;
-    height: 1.5rem!important;
-    margin: -4px 4px 0 0;
+    width: 16px !important;
+    min-width: 16px !important;
+    height: 16px !important;
+    margin: 0 8px 0 0;
     outline: 0;
-    padding: 0!important;
+    padding: 0 !important;
     vertical-align: middle;
-    width: 16px;
-    min-width: 16px;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,.1);
-    transition: .05s border-color ease-in-out;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    transition: 0.05s border-color ease-in-out;
+    border-radius: 3px;
 }
 
-/*WA button after short description*/
-.woocommerce-product-details_short-description .wa-order-button,
-.woocommerce-product-details_short-description .gdpr_wa_button_input,
-.woocommerce-Tabs-panel--description .wa-order-button,
-.woocommerce-Tabs-panel--description .gdpr_wa_button_input {
-    margin: 30px auto 30px;
+.wa-order-gdprchk input[type=checkbox]:checked {
+    background-color: #25d366;
+    border-color: #25d366;
 }
 
 .wa-order-gdprchk input[type=checkbox] + label {
-    opacity: .5!important;
-}
-.wa-order-gdprchk input[type=checkbox]:checked + label {
-    opacity: 1!important;
+    opacity: 0.5 !important;
+    transition: opacity 0.3s ease;
 }
 
+.wa-order-gdprchk input[type=checkbox]:checked + label {
+    opacity: 1 !important;
+}
+
+.wa-order-gdprchk {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #e1e1e1;
+    border-radius: 4px;
+}
+
+/* ========================================
+   WhatsApp Button - Natural Positioning
+   ======================================== */
+/* Let buttons position naturally without forced margins */
+
+/* ========================================
+   Main WhatsApp Button Styling - Natural & Simple
+   ======================================== */
 .wa-order-button,
 .gdpr_wa_button_input {
-    background: #25d366!important;
-    color: #ffffff!important;
-    transform: translateY(0px);
-    text-decoration: none!important;
-    outline: 0!important;
-    font-size: inherit!important;
-    -webkit-box-shadow: 0 4px 7px 0 rgba(0,0,0,.25);
-    -moz-box-shadow: 0 4px 7px 0 rgba(0,0,0,.25);
-    box-shadow: 0 4px 7px 0 rgba(0,0,0,.25);
-    transition: top .1s ease;
-    -webkit-transition: top .1s ease;
+    background: #25d366 !important;
+    color: #ffffff !important;
+    border: none !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
 }
 
+/* ========================================
+   Single Product Page - Minimal Positioning
+   ======================================== */
+/* Just a small margin when positioned after add to cart button */
+/* ========================================
+   Single Product Page - Conditional Positioning
+   ======================================== */
+/* Margin when positioned after add to cart button (with single_add_to_cart_button class) */
+.single-product .cart .wa-order-button.single_add_to_cart_button,
+.single-product form.cart .wa-order-button.single_add_to_cart_button {
+    margin-left: 0.1em;
+}
+
+/* No special margin for other positions */
+.single-product .cart .wa-order-button:not(.single_add_to_cart_button),
+.single-product form.cart .wa-order-button:not(.single_add_to_cart_button) {
+    margin-left: 0;
+}
+
+/* ========================================
+   Cart & Thank You Page Buttons
+   ======================================== */
 a.wa-order-checkout,
 a.wa-order-thankyou {
-    background: #25d366!important;
-    color: #ffffff!important;
-    transform: translateY(0px);
-    text-decoration: none!important;
-    outline: 0!important;
-    -webkit-box-shadow: 0 4px 7px 0 rgba(0,0,0,.25);
-    -moz-box-shadow: 0 4px 7px 0 rgba(0,0,0,.25);
-    box-shadow: 0 4px 7px 0 rgba(0,0,0,.25);
-    transition: top .1s ease;
-    -webkit-transition: top .1s ease;
+    background: #25d366 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 15px 30px !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    outline: 0 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 50px !important;
+    box-sizing: border-box !important;
+    transform: translateY(0);
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3) !important;
+    text-transform: none !important;
+    letter-spacing: 0.5px !important;
+    line-height: 1.4 !important;
+    /* width: 100% !important; */
+    text-align: center !important;
 }
 
+/* ========================================
+   Shortcode Buttons
+   ======================================== */
 .shortcode_wa_button,
 .shortcode_wa_button_nt {
-    background: #25d366!important;
-    border-radius: 5px!important;
-    color: #ffffff!important;
-    font-size: 16px!important;
-    font-weight: bold!important;
-    position: relative!important;
-    display: inline-flex!important;
-    width: auto!important;
-    transition: all .3s !important;
-    align-items: center!important;
-    box-shadow: 0 2px 2px 0px rgba(45, 62, 79, .3) !important;
-    text-transform: none!important;
-    cursor: pointer;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    -webkit-box-shadow: 0 4px 7px 0 rgba(0,0,0,.25);
-    -moz-box-shadow: 0 4px 7px 0 rgba(0,0,0,.25);
-    box-shadow: 0 4px 7px 0 rgba(0,0,0,.25);
-    transition: top .1s ease;
-    -webkit-transition: top .1s ease;
+    background: #25d366 !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 4px !important;
+    padding: 12px 24px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    outline: 0 !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 44px !important;
+    box-sizing: border-box !important;
+    width: auto !important;
+    margin: 10px 0 !important;
+    transform: translateY(0);
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3) !important;
+    text-transform: none !important;
+    letter-spacing: 0.5px !important;
+    line-height: 1.4 !important;
 }
 label.wa-button-gdpr2 {
     display: inline-block;
@@ -114,7 +170,7 @@ a.wa-shop-button:before {
     display: inline-block;
     vertical-align: middle;
     align-items: center;
-    margin-bottom: -4px;
+    margin-bottom: -5px;
     margin-top: -5px;
     width: 0.875em;
     height: auto;
@@ -177,25 +233,25 @@ a.shortcode_wa_button:before, a.shortcode_wa_button_nt:before {
     height: auto;
     margin-right: 7px;
 }
-a.shortcode_wa_button:before, {
+a.shortcode_wa_button:before {
     margin-right: 8px;
 }
 .wa-order-button, .gdpr_wa_button_input {
     padding-left: 25px!important;
     padding-right: 25px!important;
 }
+
+/* Natural padding and icon spacing */
 .shortcode_wa_button, .shortcode_wa_button_nt {
     padding: 7px 25px!important;
     opacity: 1;
     text-decoration: none!important;
     outline: 0!important;
 }
-a.wa-shop-button:hover, a.wa-order-checkout:hover, a.wa-order-thankyou:hover, .wa-order-class:hover, .wa-order-button:hover, .shortcode_wa_button:hover, .shortcode_wa_button_nt:hover, .gdpr_wa_button_input:hover {
-    color: #ffffff !important;
-    background: #21bd5b;
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px -5px rgba(45, 62, 79, .3) !important;
-    transition: all ease-in-out 300ms;
+/* Simple hover state - just darker green */
+.wa-order-button:hover,
+.gdpr_wa_button_input:hover {
+    background: #21bd5b !important;
 }
 button.gdpr_wa_button_input:disabled:hover, button.gdpr_wa_button_input:disabled {
     opacity: .5!important;
@@ -309,4 +365,10 @@ a.single_product_shortcode_fullwidth:before {
 a.wa-shop-button:before {
     margin-right: 3px!important;
 }
+}
+.woocommerce-variation-add-to-cart > a.wa-order-class {
+    flex: unset !important;
+}
+.single-product a.wa-order-class {
+    flex: 0 0 auto!important;
 }

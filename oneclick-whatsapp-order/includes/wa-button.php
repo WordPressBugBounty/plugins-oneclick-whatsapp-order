@@ -3,16 +3,18 @@
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly
 }
-
 /**
+ * OneClick Chat to Order
+ *
  * @package     OneClick Chat to Order
- * @author      Walter Pinem
- * @link        https://walterpinem.me
- * @link        https://www.seniberpikir.com/oneclick-wa-order-woocommerce/
- * @copyright   Copyright (c) 2019, Walter Pinem, Seni Berpikir
+ * @author      Walter Pinem <hello@walterpinem.me>
+ * @link        https://walterpinem.me/
+ * @link        https://www.onlinestorekit.com/oneclick-chat-to-order/
+ * @copyright   Copyright (c) 2019 - 2025, Walter Pinem | Online Store Kit
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
- * @category    Admin Page
- */
+ * @category    WhatsApp Buttons Functions
+ *
+ ********************************* WhatsApp Buttons Functions ********************************* */
 
 // Include important files
 require_once plugin_dir_path(dirname(__FILE__)) . 'includes/buttons/wa-order-cart-page.php';
@@ -37,7 +39,7 @@ function wa_order_confirm_if_number_added()
         '</strong>',
         '<a href="' . esc_url(admin_url('edit.php?post_type=wa-order-numbers')) . '">',
         '</a>',
-        '<a href="' . esc_url('https://walterpinem.me/projects/oneclick-chat-to-order-mutiple-numbers-feature/?utm_source=admin-notice&utm_medium=admin-dashboard&utm_campaign=OneClick-Chat-to-Order') . '" target="_blank">',
+        '<a href="' . esc_url(oskit_url('https://walterpinem.me/projects/oneclick-chat-to-order-mutiple-numbers-feature/')) . '" target="_blank">',
         '</a>',
         '<a href="' . esc_url(admin_url('admin.php?page=wa-order&tab=button_config')) . '">',
         '</a>'
@@ -144,7 +146,7 @@ function wa_order_convert_phone_link()
                     var numberElement = document.querySelector(".address p:nth-of-type(3) a");
                     if (numberElement) {
                         var number = numberElement.textContent;
-                        var message = encodeURIComponent("<?php echo esc_html($custom_message); ?>");
+                        var message = encodeURIComponent(<?php echo wp_json_encode($custom_message); ?>);
                         var changephonelinktowhatsapp = "https://wa.me/" + number.replace(/[^0-9]/g, '') + "?text=" + message;
                         numberElement.setAttribute("href", changephonelinktowhatsapp);
                     }

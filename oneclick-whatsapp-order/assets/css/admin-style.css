@@ -6,12 +6,16 @@
     background: #25D366;
     color: #ffffff;
 }
-.col {
+.OCWAORDER_pluginpage_title .col {
   float: left;
   width: 48%;
   padding: 10px;
 }
-.about-wrap h4 {
+.OCWAORDER_pluginpage_title .feature-section {
+	margin-left: auto;
+	margin-right: auto;
+}
+.OCWAORDER_pluginpage_title .about-wrap h4 {
 	margin: 1.25em 0 0.6em;
 	font-size: 1.1em;
 	line-height: 1.5;
@@ -170,3 +174,14 @@
  	text-align: center;
  	font-size: 10px!important;
  }
+ .oneclick-spacer {
+	margin-top:20px;
+ }
+.oskit-footer-thankyou a {
+	text-decoration: none;
+	color:#c1a50a;
+	font-weight: bold;
+}
+.oskit-footer-thankyou a:hover {
+	text-decoration: underline;
+}

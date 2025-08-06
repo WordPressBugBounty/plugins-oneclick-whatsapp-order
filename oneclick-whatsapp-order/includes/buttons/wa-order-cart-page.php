@@ -3,6 +3,47 @@
 if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly
 }
+/**
+ * OneClick Chat to Order
+ *
+ * @package     OneClick Chat to Order
+ * @author      Walter Pinem <hello@walterpinem.me>
+ * @link        https://walterpinem.me/
+ * @link        https://www.onlinestorekit.com/oneclick-chat-to-order/
+ * @copyright   Copyright (c) 2019 - 2025, Walter Pinem | Online Store Kit
+ * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
+ * @category    Cart Page
+ *
+ ********************************* Cart Page ********************************* */
+
+// Additional safety check for WordPress functions
+if (!function_exists('add_action') || !function_exists('get_option')) {
+	// Try to load WordPress if not already loaded
+	if (!defined('WP_CONTENT_DIR')) {
+		// Find WordPress root directory
+		$wp_root = dirname(dirname(dirname(dirname(__FILE__))));
+		if (file_exists($wp_root . '/wp-load.php')) {
+			require_once($wp_root . '/wp-load.php');
+		}
+	}
+
+	// Final check - if still not available, exit gracefully
+	if (!function_exists('add_action')) {
+		// Use basic PHP error instead of wp_die since WordPress might not be loaded
+		if (function_exists('wp_die')) {
+			wp_die(
+				'<h1>Error</h1><p>WordPress functions are not available. Please ensure WordPress is properly loaded.</p>',
+				'WordPress Loading Error',
+				array('response' => 500)
+			);
+		} else {
+			// Fallback for when wp_die is not available
+			header('HTTP/1.1 500 Internal Server Error');
+			echo '<h1>Error</h1><p>WordPress functions are not available. Please ensure WordPress is properly loaded.</p>';
+			exit;
+		}
+	}
+}
 
 /**
  * OneClick Chat to Order Cart Page
@@ -10,8 +51,8 @@ if (!defined('ABSPATH')) {
  * @package     OneClick Chat to Order
  * @author      Walter Pinem <hello@walterpinem.me>
  * @link        https://walterpinem.me/
- * @link        https://onlinestorekit.com/oneclick-chat-to-order/
- * @copyright   Copyright (c) 2019 - 2024, Walter Pinem | Online Store Kit
+ * @link        https://www.onlinestorekit.com/oneclick-chat-to-order/
+ * @copyright   Copyright (c) 2019 - 2025, Walter Pinem | Online Store Kit
  * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
  * @category    Cart Page
  */
@@ -19,8 +60,7 @@ if (!defined('ABSPATH')) {
 // Start the function to show WhatsApp button on Cart page
 function wa_order_add_button_to_cart_page()
 {
-	global $woocommerce;
-	$cart = WC()->cart;
+	// Cart functionality handled by WC()->cart calls below
 	// Load the setting values
 	$options = array(
 		'whatsapp_number'     => apply_filters('wa_order_filter_whatsapp_number_cart', get_option('wa_order_selected_wa_number_cart', '')),
@@ -52,8 +92,7 @@ function wa_order_add_button_to_cart_page()
 	$cart_button_text	= $options['cart_button_text'];
 	$custom_message		= $options['custom_message'];
 	$message			= urlencode($custom_message);
-	$currency			= html_entity_decode(get_woocommerce_currency_symbol());
-	$quantity_label		= $options['quantity_label'];
+	// Currency and quantity label handled inline where needed
 	foreach ($items as $item) {
 		$_product		= wc_get_product($item['product_id']);
 		$product_name	= apply_filters('wa_order_filter_cart_product_name', $_product->get_name(), $_product);
@@ -62,8 +101,8 @@ function wa_order_add_button_to_cart_page()
 		$format_price	= apply_filters('wa_order_filter_cart_price', html_entity_decode(wp_strip_all_tags(wc_price($price))), $price, $_product);
 		$product_url	= apply_filters('wa_order_filter_cart_product_url', get_post_permalink($item['product_id']), $_product);
 		$total_amount	= wc_price(WC()->cart->get_cart_total());
-		$price_label	= $options['price_label'];
-		$url_label		= $options['url_label'];
+		$price_label	= !empty($options['price_label']) ? $options['price_label'] : 'Price';
+		$url_label		= !empty($options['url_label']) ? $options['url_label'] : 'URL';
 		$thanks_label	= $options['thanks_label'];
 		$total_label	= $options['total_label'];
 		$target			= $options['target'];
@@ -77,13 +116,12 @@ function wa_order_add_button_to_cart_page()
 		} else {
 			$message .= "";
 		}
-		if ($removeproductURL === 'yes') {
-			$message .= urlencode("\r\n*" . $price_label . ":*");
-			$message .= " " . $format_price . " ";
-		} else {
-			$message .= urlencode("\r\n*" . $price_label . ":*");
-			$message .= " " . $format_price . " ";
-			$message .= urlencode("\r\n*" . $url_label . ":* " . $product_url . "");
+		// Add price information
+		$message .= urlencode("\r\n*" . $price_label . ":* " . $format_price);
+
+		// Add URL if not removed
+		if ($removeproductURL !== 'yes') {
+			$message .= urlencode("\r\n*" . $url_label . ":* " . $product_url);
 		}
 	}
 	// Subtotal
@@ -138,7 +176,7 @@ function wa_order_add_button_to_cart_page()
 	foreach ($coupons as $coupon_code) {
 		$coupon = new WC_Coupon($coupon_code);
 
-		if ($woocommerce->cart->has_discount($coupon->get_code())) {
+		if (WC()->cart->has_discount($coupon->get_code())) {
 			$coupon_label = $options['coupon_label'];
 			$voucher_label = empty($coupon_label) ? "Voucher Code:" : $coupon_label;
 
@@ -187,26 +225,49 @@ function wa_order_add_button_to_cart_page()
 
 	// Tax
 	if ($options['include_tax'] == 'yes') {
-		$tax			 = WC()->cart->get_total_tax();
-		$tax_label		 = $options['tax_label'];
-		$message		.= urlencode("\r\n*" . $tax_label . ":* " . $currency . $tax . "\r\n");
+		$tax = WC()->cart->get_total_tax();
+		$tax_label = !empty($options['tax_label']) ? $options['tax_label'] : 'Tax';
+		$formatted_tax = wc_price($tax);
+		$message .= urlencode("\r\n*" . $tax_label . ":* " . html_entity_decode(wp_strip_all_tags($formatted_tax)));
 	}
-	$message			.= urlencode("\r\n*" . $total_label . ":*\r\n");
-	$total_amount		 = wp_kses_data(WC()->cart->get_total());
-	$message			.= "" . html_entity_decode($total_amount) . "";
-	$message			.= urlencode("\r\n\r\n" . $thanks_label . "");
+
+	// Total
+	$total_amount = wp_kses_data(WC()->cart->get_total());
+	$message .= urlencode("\r\n*" . $total_label . ":* " . html_entity_decode($total_amount));
+	$message .= urlencode("\r\n\r\n" . $thanks_label);
 	$button_url			 = apply_filters('wa_order_filter_cart_button_url', wa_order_the_url($phonenumb, urldecode($message)), $phonenumb, $message); // phpcs:ignore WordPress.Security.EscapeOutput.
 	$cart_button_text	 = apply_filters('wa_order_filter_cart_button_text_final', $options['cart_button_text']);
 	$target				 = apply_filters('wa_order_filter_cart_button_target', $options['target']);
 ?>
 	<div class="wc-proceed-to-checkout">
 		<a id="sendbtn" href="<?php echo $button_url;  // phpcs:ignore WordPress.Security.
-								?>" target="<?php echo esc_attr($target); ?>" class="wa-order-checkout checkout-button button">
+								?>" target="<?php echo esc_attr($target); ?>" class="wa-order-checkout checkout-button button wa-cart-button">
 			<?php echo esc_html($cart_button_text);  ?>
 		</a>
 	</div>
+
+	<!-- Ensure cart button is always visible and fullwidth like original -->
+	<style>
+		.wa-cart-button {
+			display: block !important;
+			width: 100% !important;
+			text-align: center !important;
+		}
+
+		/* Override any global hide rules that might affect cart button */
+		.wc-proceed-to-checkout .wa-cart-button {
+			display: block !important;
+			width: 100% !important;
+		}
+
+		/* Ensure the container allows fullwidth */
+		.wc-proceed-to-checkout {
+			width: 100% !important;
+		}
+	</style>
 <?php
 }
+// Add cart button - keep original single button approach
 if (get_option('wa_order_option_add_button_to_cart', 'yes') === 'yes') {
 	add_action('woocommerce_after_cart_totals', 'wa_order_add_button_to_cart_page', 1);
 }

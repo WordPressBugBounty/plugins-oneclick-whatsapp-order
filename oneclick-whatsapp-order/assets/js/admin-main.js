@@ -1,23 +1,45 @@
-// Shortcode Benerator
-function generateWAshortcode(form) {
-	var Vselected_wa_number = document.getElementById("selected_wa_number").value
-	var VWAbuttonText = document.getElementById("WAbuttonText").value
-	var VWAcustomMessage = document.getElementById("WAcustomMessage").value
-	var VWAnewTab = document.getElementById("WAnewTab").value
+// Shortcode Generator
+function generateWAshortcode() {
+	// Check if required elements exist before proceeding
+	var selectedNumberEl = document.getElementById("selected_wa_number");
+	var buttonTextEl = document.getElementById("WAbuttonText");
+	var customMessageEl = document.getElementById("WAcustomMessage");
+	var newTabEl = document.getElementById("WAnewTab");
+	var outputEl = document.getElementById("generatedShortcode");
+
+	if (!selectedNumberEl || !buttonTextEl || !customMessageEl || !newTabEl || !outputEl) {
+		return; // Silently return if elements don't exist
+	}
+
+	var Vselected_wa_number = selectedNumberEl.value;
+	var VWAbuttonText = buttonTextEl.value;
+	var VWAcustomMessage = customMessageEl.value;
+	var VWAnewTab = newTabEl.value;
 	var generatedWAbuttonData = '[waorder phone="'+Vselected_wa_number+'" button="'+VWAbuttonText+'" message="'+VWAcustomMessage+'" target="'+VWAnewTab+'"]';
-	document.getElementById("generatedShortcode").innerHTML = generatedWAbuttonData;
+	outputEl.innerHTML = generatedWAbuttonData;
 }
 
 jQuery(document).ready(function ($) {
   // Function to toggle the full-width option visibility
   function toggleFullWidthOption() {
-      var buttonPosition = $('#wa_order_single_product_button_position').val();
+      var $buttonPosition = $('#wa_order_single_product_button_position');
+      var $fullwidthContainer = $('#force_fullwidth_container');
+      var $fullwidthCheckbox = $('#wa_order_single_force_fullwidth');
+
+      // Only proceed if the elements exist
+      if ($buttonPosition.length === 0 || $fullwidthContainer.length === 0) {
+          return;
+      }
+
+      var buttonPosition = $buttonPosition.val();
 
       if (buttonPosition === 'after_atc') {
-          $('#force_fullwidth_container').hide(); // Hide checkbox
-          $('#wa_order_single_force_fullwidth').prop('checked', false).val('no'); // Reset to 'No'
+          $fullwidthContainer.hide(); // Hide checkbox
+          if ($fullwidthCheckbox.length > 0) {
+              $fullwidthCheckbox.prop('checked', false).val('no'); // Reset to 'No'
+          }
       } else {
-          $('#force_fullwidth_container').show(); // Show checkbox
+          $fullwidthContainer.show(); // Show checkbox
       }
   }
 
@@ -30,22 +52,96 @@ jQuery(document).ready(function ($) {
   });
 });
 
-// Single Product Shortcode Generator
+// Global variables for Single Product Shortcode Generator
+var SingleWAShortcodeElements = {};
+
+// Global function to generate single WA shortcode (accessible to HTML onchange attributes)
+function generateSingleWAshortcode() {
+    // Check if elements are initialized
+    if (!SingleWAShortcodeElements.initialized) {
+        return;
+    }
+
+    var productSelect = SingleWAShortcodeElements.productSelect;
+    var productIdField = SingleWAShortcodeElements.productIdField;
+    var buttonText = SingleWAShortcodeElements.buttonText;
+    var customMessage = SingleWAShortcodeElements.customMessage;
+    var shortcodeOutput = SingleWAShortcodeElements.shortcodeOutput;
+    var waNumberSelect = SingleWAShortcodeElements.waNumberSelect;
+    var buttonForceFullwidth = SingleWAShortcodeElements.buttonForceFullwidth;
+
+    var productValue = productSelect.value;
+    var productId = productIdField.value;
+    var buttonTextValue = buttonText.value.trim();
+    var customMessageValue = customMessage.value.trim();
+    var selectedWaNumber = waNumberSelect.value;
+    var isFullwidth = buttonForceFullwidth.value;
+
+    // Default shortcode
+    var shortcode = '[oneclick single="true"';
+
+    // Add phone attribute (WhatsApp number)
+    if (selectedWaNumber !== '') {
+        shortcode += ' phone="' + selectedWaNumber + '"';
+    }
+
+    // Handle product attribute
+    if (productValue === 'current') {
+        shortcode += ' product="current"';
+    } else if (productValue === 'product_id' && productId !== '') {
+        shortcode += ' product="' + productId + '"';
+    }
+
+    // Handle text attribute
+    if (buttonTextValue !== '') {
+        shortcode += ' text="' + buttonTextValue + '"';
+    }
+
+    // Handle message attribute
+    if (customMessageValue !== '') {
+        shortcode += ' message="' + customMessageValue + '"';
+    }
+
+    // Force fullwidth
+    if (isFullwidth !== '') {
+        shortcode += ' fullwidth="' + isFullwidth + '"';
+    }
+
+    // Close the shortcode
+    shortcode += ']';
+
+    // Output the generated shortcode
+    shortcodeOutput.value = shortcode;
+}
+
+// Single Product Shortcode Generator Initialization
 document.addEventListener('DOMContentLoaded', function() {
     // Select DOM elements
-    const productSelect = document.getElementById('SingleWAWhichPage');
-    const productIdField = document.getElementById('SingleWAProductID');
-    const buttonText = document.getElementById('SingleWAbuttonText');
-    const customMessage = document.getElementById('SingleWAcustomMessage');
-    const shortcodeOutput = document.getElementById('generatedSingleWAShortcode');
-    const waNumberSelect = document.getElementById('selected_wa_number');
-    const buttonForceFullwidth = document.getElementById('SingleWAFullwidth');
+    var productSelect = document.getElementById('SingleWAWhichPage');
+    var productIdField = document.getElementById('SingleWAProductID');
+    var buttonText = document.getElementById('SingleWAbuttonText');
+    var customMessage = document.getElementById('SingleWAcustomMessage');
+    var shortcodeOutput = document.getElementById('generatedSingleWAShortcode');
+    var waNumberSelect = document.getElementById('selected_wa_number');
+    var buttonForceFullwidth = document.getElementById('SingleWAFullwidth');
 
-    // Check if all required elements exist
+    // Check if all required elements exist - only initialize if we're on the shortcode page
     if (!productSelect || !productIdField || !buttonText || !customMessage || !shortcodeOutput || !waNumberSelect || !buttonForceFullwidth) {
-        console.error('One or more required elements are missing. Shortcode generator cannot initialize.');
-        return;  // Exit the function if any element is missing
+        // Silently return if elements don't exist (we're not on the shortcode page)
+        return;
     }
+
+    // Store elements globally
+    SingleWAShortcodeElements = {
+        productSelect: productSelect,
+        productIdField: productIdField,
+        buttonText: buttonText,
+        customMessage: customMessage,
+        shortcodeOutput: shortcodeOutput,
+        waNumberSelect: waNumberSelect,
+        buttonForceFullwidth: buttonForceFullwidth,
+        initialized: true
+    };
 
     // Function to hide an element
     function hideElement(element) {
@@ -63,52 +159,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Hide Product ID field initially
     hideElement(productIdField);
-
-    // Function to generate the shortcode
-    function generateSingleWAshortcode() {
-        let productValue = productSelect.value;
-        let productId = productIdField.value;
-        let buttonTextValue = buttonText.value.trim();
-        let customMessageValue = customMessage.value.trim();
-        let selectedWaNumber = waNumberSelect.value;
-        let isFullwidth = buttonForceFullwidth.value;
-
-        // Default shortcode
-        let shortcode = '[oneclick single="true"';
-
-        // Add phone attribute (WhatsApp number)
-        if (selectedWaNumber !== '') {
-            shortcode += ` phone="${selectedWaNumber}"`;
-        }
-
-        // Handle product attribute
-        if (productValue === 'current') {
-            shortcode += ' product="current"';
-        } else if (productValue === 'product_id' && productId !== '') {
-            shortcode += ` product="${productId}"`;
-        }
-
-        // Handle text attribute
-        if (buttonTextValue !== '') {
-            shortcode += ` text="${buttonTextValue}"`;
-        }
-
-        // Handle message attribute
-        if (customMessageValue !== '') {
-            shortcode += ` message="${customMessageValue}"`;
-        }
-
-        // Force fullwidth
-        if (isFullwidth !== '') {
-            shortcode += ` fullwidth="${isFullwidth}"`;
-        }
-
-        // Close the shortcode
-        shortcode += ']';
-
-        // Output the generated shortcode
-        shortcodeOutput.value = shortcode;
-    }
 
     // Event listeners for changes
     productSelect.addEventListener('change', function() {

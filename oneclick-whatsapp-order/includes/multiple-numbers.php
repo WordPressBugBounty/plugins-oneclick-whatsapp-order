@@ -1,4 +1,20 @@
 <?php
+// Prevent direct access
+if (!defined('ABSPATH')) {
+  exit; // Exit if accessed directly
+}
+/**
+ * OneClick Chat to Order
+ *
+ * @package     OneClick Chat to Order
+ * @author      Walter Pinem <hello@walterpinem.me>
+ * @link        https://walterpinem.me/
+ * @link        https://www.onlinestorekit.com/oneclick-chat-to-order/
+ * @copyright   Copyright (c) 2019 - 2025, Walter Pinem | Online Store Kit
+ * @license     http://www.gnu.org/licenses/gpl-3.0.html GNU General Public License v3.0
+ * @category    Multiple Numbers Post Type and Functions
+ *
+ ********************************* Multiple Numbers Post Type and Functions ********************************* */
 
 /**
  * Inspired by: Jean Livino (jeanlivino)
@@ -81,7 +97,7 @@ function wa_order_multiple_numbers_save_metabox($post_id, $post)
   // Verify that our security field exists. If not, bail.
   if (!isset($_POST['wa_order_phonenumbers_metabox_process'])) return;
   // Verify data came from edit/dashboard screen
-  if (!wp_verify_nonce($_POST['wa_order_phonenumbers_metabox_process'], 'wa_order_phonenumbers_metabox_nonce')) {
+  if (!wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['wa_order_phonenumbers_metabox_process'])), 'wa_order_phonenumbers_metabox_nonce')) {
     return $post_id;
   }
   // Verify user has permission to edit post
@@ -93,7 +109,7 @@ function wa_order_multiple_numbers_save_metabox($post_id, $post)
     return $post_id;
   }
   // Sanitize the submitted phone number
-  $sanitized_phone = sanitize_text_field($_POST['wa_order_phone_number_input']);
+  $sanitized_phone = sanitize_text_field(wp_unslash($_POST['wa_order_phone_number_input']));
   // Save our submissions to the database
   update_post_meta($post_id, 'wa_order_phone_number_input', $sanitized_phone);
 }
@@ -145,7 +161,7 @@ function wa_order_number_save_number_field($pid, $post)
   }
   // Check if the phone number input exists in the POST data
   if (isset($_POST['wa_order_phone_number_input'])) {
-    $sanitized_phone = sanitize_text_field($_POST['wa_order_phone_number_input']);
+    $sanitized_phone = sanitize_text_field(wp_unslash($_POST['wa_order_phone_number_input']));
     update_post_meta($pid, 'wa_order_phone_number_input', $sanitized_phone);
   } else {
     // If the phone number input is not set, you might want to delete the meta key or handle it accordingly
@@ -160,7 +176,7 @@ function wa_order_completion_validator($pid, $post)
     return;
   }
   $wa_number = get_post_meta($pid, 'wa_order_phone_number_input', true);
-  if (empty($wa_number) && (isset($_POST['publish']) || isset($_POST['save'])) && $_POST['post_status'] == 'publish') {
+  if (empty($wa_number) && (isset($_POST['publish']) || isset($_POST['save'])) && isset($_POST['post_status']) && sanitize_text_field(wp_unslash($_POST['post_status'])) == 'publish') {
     global $wpdb;
     $wpdb->update($wpdb->posts, array('post_status' => 'pending'), array('ID' => $pid));
     add_filter('redirect_post_location', function ($location) {
@@ -186,8 +202,8 @@ function wa_order_check_if_number_empty()
     $wa_number = get_post_meta(get_the_ID(), 'wa_order_phone_number_input', true);
     // Check if WhatsApp number is empty
     if (empty($wa_number)) {
-      $error = esc_html_e('OneClick Chat to Order requires a WhatsApp number to be set! Please add a valid and active WhatsApp number.', 'oneclick-wa-order');
-      printf('<div class="error"><p><strong>%s</strong></p></div>', esc_html($error));
+      $error_message = esc_html__('OneClick Chat to Order requires a WhatsApp number to be set! Please add a valid and active WhatsApp number.', 'oneclick-wa-order');
+      printf('<div class="error"><p><strong>%s</strong></p></div>', esc_html($error_message));
     }
   }
 }
