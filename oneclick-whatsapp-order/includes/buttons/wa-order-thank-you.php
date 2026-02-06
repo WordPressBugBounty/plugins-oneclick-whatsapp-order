@@ -122,10 +122,20 @@ function wa_order_thank_you_override($title, $id)
         $order_summary_label = 'Order Summary';
     }
 
-    // Check the order
+    // Check the order with enhanced security validation
     $order_id               = (int) $wp->query_vars['order-received'];
-    if ($order_id) {
-        $order              = wc_get_order($order_id);
+    if (!$order_id) {
+        return '';
+    }
+    
+    // Validate order access (if security enhancements are loaded)
+    if (function_exists('wa_order_validate_order_access') && !wa_order_validate_order_access($order_id)) {
+        return '';
+    }
+    
+    $order = wc_get_order($order_id);
+    if (!$order) {
+        return '';
     }
 
     // Prepare the message

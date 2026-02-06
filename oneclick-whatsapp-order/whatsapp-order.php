@@ -8,7 +8,7 @@ if (!defined('ABSPATH')) {
  * Plugin Name:       OneClick Chat to Order
  * Plugin URI:        https://www.onlinestorekit.com/oneclick-chat-to-order/
  * Description:       Make it easy for your customers to order via WhatsApp chat through a single button click with detailing information about a product including custom message. OneClick Chat to Order button can be displayed on a single product page and as a floating button. GDPR-ready!
- * Version:           1.0.8
+ * Version:           1.1.0
  * Author:            Walter Pinem
  * Author URI:        https://walterpinem.com/
  * Developer:         Walter Pinem | Online Store Kit
@@ -23,7 +23,7 @@ if (!defined('ABSPATH')) {
  * Requires PHP:      7.4
  *
  * WC requires at least: 8.2
- * WC tested up to: 10.0.4
+ * WC tested up to: 10.4.0
  *
  * Copyright: © 2019 - 2025 Walter Pinem.
  * License: GNU General Public License v3.0
@@ -132,6 +132,9 @@ function OCWAORDER_plugin_init()
     require_once dirname(__FILE__) . '/includes/wa-gdpr.php';
     require_once dirname(__FILE__) . '/includes/wa-metabox.php';
     require_once dirname(__FILE__) . '/includes/multiple-numbers.php';
+    
+    // Load security enhancements
+    require_once dirname(__FILE__) . '/includes/security-enhancements.php';
 
     // Make sure WooCommerce is active
     function OCWAORDER_check_woocommece_active()

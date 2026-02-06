@@ -3,8 +3,8 @@ Contributors: walterpinem
 Donate link: https://www.paypal.me/WalterPinem
 Tags: woocommerce, woocommerce whatsapp, whatsapp, whatsapp chat, click to chat
 Requires at least: 6.0
-Tested up to: 6.8.2
-Stable tag: 1.0.8
+Tested up to: 6.9
+Stable tag: 1.1.0
 Requires PHP: 7.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
@@ -187,8 +187,8 @@ For additional support:
 
 = Is it compatible with WooCommerce HPOS? =
 Yes! OneClick Chat to Order fully supports WooCommerce High Performance Order Storage (HPOS) and is compatible with:
-– WordPress 6.8.2+
-– WooCommerce 10.0.4+
+– WordPress 6.9+
+– WooCommerce 10.4.0+
 – PHP 7.4+
 – Modern hosting environments
 
@@ -203,6 +203,50 @@ Yes! OneClick Chat to Order fully supports WooCommerce High Performance Order St
 8. WhatsApp button shortcode output on the front-end
 
 == Changelog ==
+= 1.1.0 – December 11, 2025 =
+
+**Security Advisory**: This update addresses a Missing Authorization vulnerability (CVE-2025-14270) that allowed authenticated users with Editor role or higher to modify plugin settings without proper authorization.
+**Credits**: Thank you to the Wordfence security team for responsible disclosure and the WordPress.org Plugins Repository team for the report.
+
+#### **Security Update**
+* **Authorization Fix** – Added proper capability checks to restrict WhatsApp number management to administrators only
+* **Custom Post Type Restriction** – WhatsApp Numbers CPT now requires `manage_options` capability for all operations
+* **Nonce Verification** – Enhanced CSRF protection for all save operations
+
+#### **Technical Details**
+* **Minimal Implementation** – Security fix with no impact on existing functionality
+* **Backward Compatible** – All existing features work exactly as before
+* **WordPress Standards** – Uses WordPress core capability system
+
+#### **Important Notes**
+* **Security Update** – Addresses unauthorized settings modification issue
+* **No Breaking Changes** – Only administrators could previously access these settings in the UI
+* **Immediate Update Recommended** – Update to ensure proper authorization controls
+
+= 1.0.9 – November 07, 2025 =
+
+**Security Advisory**: This update addresses a potential IDOR (Insecure Direct Object Reference) vulnerability that could allow unauthorized access to order details. 
+**Credits**: Thank you very much to Md Shofiur R. from Pentest Testing Corp for responsible disclosure.
+
+#### **Security Update**
+* **Order Access Validation** – Added validation to prevent unauthorized access to order details on thank you pages
+* **IDOR Vulnerability Fix** – Implemented proper authorization checks to ensure users can only view their own orders or orders they have permission to access
+
+#### **Security Improvements**
+* **User Permission Checks** – Verify user ownership before displaying order information
+* **Admin Access Control** – Maintain proper admin access to all orders for management purposes
+* **Guest Order Protection** – Validate order keys for guest purchases following WooCommerce standards
+
+#### **Technical Details**
+* **Minimal Implementation** – Added single security function with no performance impact
+* **Backward Compatible** – No changes to existing functionality or user experience
+* **WordPress Standards** – Uses only WordPress and WooCommerce core functions
+
+#### **Important Notes**
+* **Security Update** – Addresses potential unauthorized order access issue
+* **No Breaking Changes** – All existing features work exactly as before
+* **Immediate Update Recommended** – Update to ensure order privacy protection
+
 = 1.0.8 – August 06, 2025 =
 
 #### **Major New Features**
@@ -454,45 +498,21 @@ Yes! OneClick Chat to Order fully supports WooCommerce High Performance Order St
 
 == Upgrade Notice ==
 
-= 1.0.8 – August 06, 2025 =
-**🚀 MAJOR UPDATE – Highly Recommended Upgrade**
+= 1.1.0 – December 11, 2025 =
+**Security Advisory**: This update addresses a Missing Authorization vulnerability (CVE-2025-14270) that allowed authenticated users with Editor role or higher to modify plugin settings without proper authorization.
+**Credits**: Thank you to the Wordfence security team for responsible disclosure and the WordPress.org Plugins Repository team for the report.
 
-This is a significant update that introduces revolutionary features and critical improvements:
+#### **Security Update**
+* **Authorization Fix** – Added proper capability checks to restrict WhatsApp number management to administrators only
+* **Custom Post Type Restriction** – WhatsApp Numbers CPT now requires `manage_options` capability for all operations
+* **Nonce Verification** – Enhanced CSRF protection for all save operations
 
-**Game-Changing New Features:**
-* **Force wa.me URL Option** – Ensures consistent WhatsApp behavior across all devices and browsers
-* **JavaScript onClick Events** – Solves Ajax theme compatibility issues and prevents WooCommerce conflicts
-* **WPML Integration** – Full multilingual support for international stores
-* **Comprehensive Uninstall System** – Complete control over data cleanup during plugin removal
+#### **Technical Details**
+* **Minimal Implementation** – Security fix with no impact on existing functionality
+* **Backward Compatible** – All existing features work exactly as before
+* **WordPress Standards** – Uses WordPress core capability system
 
-**Critical Security & Performance Improvements:**
-* **Enhanced Security** – Fixed multiple XSS vulnerabilities and strengthened input validation
-* **Performance Optimization** – Intelligent caching system and efficient database queries
-* **Theme Compatibility** – Natural styling that adapts seamlessly to any theme
-* **Mobile Optimization** – Improved responsive design and touch-friendly interfaces
-
-**Important Bug Fixes:**
-* Fixed onClick buttons redirecting to /undefined
-* Resolved floating button icon positioning issues
-* Eliminated JavaScript console errors
-* Corrected button styling inconsistencies across themes
-
-**Enhanced User Experience:**
-* Better accessibility with high contrast and reduced motion support
-* Improved mobile touch targets and spacing
-* Conditional CSS classes for perfect theme integration
-* Enhanced GDPR compliance features
-
-**Why Upgrade Now:**
-– **Better Compatibility** – Works flawlessly with modern themes and WooCommerce features
-– **Improved Security** – Protects your site from potential vulnerabilities
-– **Enhanced Performance** – Faster loading times and better resource management
-– **Future-Proof** – Full compatibility with WordPress 6.8+ and WooCommerce 10+
-
-**Seamless Upgrade Process:**
-– Fully backward compatible – no settings will be lost
-– Automatic database migration for new features
-– All existing configurations remain intact
-– No manual intervention required
-
-**Upgrade today to experience the most advanced WhatsApp integration for WooCommerce!**
+#### **Important Notes**
+* **Security Update** – Addresses unauthorized settings modification issue
+* **No Breaking Changes** – Only administrators could previously access these settings in the UI
+* **Immediate Update Recommended** – Update to ensure proper authorization controls
