@@ -3,9 +3,11 @@ Contributors: walterpinem
 Donate link: https://www.paypal.me/WalterPinem
 Tags: woocommerce, woocommerce whatsapp, whatsapp, whatsapp chat, click to chat
 Requires at least: 6.0
-Tested up to: 6.9
-Stable tag: 1.1.0
+Tested up to: 6.9.4
+Stable tag: 1.1.1
 Requires PHP: 7.4
+WC requires at least: 8.2
+WC tested up to: 10.6.1
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -188,7 +190,7 @@ For additional support:
 = Is it compatible with WooCommerce HPOS? =
 Yes! OneClick Chat to Order fully supports WooCommerce High Performance Order Storage (HPOS) and is compatible with:
 – WordPress 6.9+
-– WooCommerce 10.4.0+
+– WooCommerce 10.6.1+
 – PHP 7.4+
 – Modern hosting environments
 
@@ -203,10 +205,24 @@ Yes! OneClick Chat to Order fully supports WooCommerce High Performance Order St
 8. WhatsApp button shortcode output on the front-end
 
 == Changelog ==
+= 1.1.1 – March 27, 2026 =
+
+#### **New Features**
+* **Automated Checkbox Migration Routine** – Background database migration (`wa_order_run_migrations`) runs automatically on update, inspecting database state and repairing corrupted settings options back to their intended `'yes'`/`'no'` values.
+* **Migration Admin Notice** – One-time dismissible notice for administrators confirming when the database repair is complete, with a link to review settings.
+* **WooCommerce Block Cart Support** – Full support for the Gutenberg-based Block Cart via dual-mode hook approach. Uses `MutationObserver` JavaScript injection to wait for React hydration before inserting the WhatsApp checkout button.
+* **Block Cart "Hide Checkout" Support** – Scoped dynamic CSS injected via `wp_head` to hide the Block Cart's native checkout button, since `remove_action('woocommerce_proceed_to_checkout')` is ignored by Block Cart.
+
+#### **Bug Fixes**
+* Fixed a major glitch causing all checkbox-based plugin settings (e.g. enabling/disabling cart buttons, altering visibility, GDPR toggles) to fail to save across the entire plugin.
+* Restored missing `sanitize_checkbox` callbacks across 35+ `register_setting` rules, correctly translating checkbox states to binary `'yes'`/`'no'` options.
+* Fixed the WhatsApp Cart Button not rendering on sites using modern block themes (e.g. Twenty Twenty-Five) due to WooCommerce transitioning from legacy shortcodes to React-based Block Cart.
+* Fixed the "Hide Proceed to Checkout button?" option being silently ignored on Block Cart structures.
+
 = 1.1.0 – December 11, 2025 =
 
 **Security Advisory**: This update addresses a Missing Authorization vulnerability (CVE-2025-14270) that allowed authenticated users with Editor role or higher to modify plugin settings without proper authorization.
-**Credits**: Thank you to the Wordfence security team for responsible disclosure and the WordPress.org Plugins Repository team for the report.
+**Credits**: Thank you to the Wordfence security team for responsible disclosure.
 
 #### **Security Update**
 * **Authorization Fix** – Added proper capability checks to restrict WhatsApp number management to administrators only
@@ -498,21 +514,14 @@ Yes! OneClick Chat to Order fully supports WooCommerce High Performance Order St
 
 == Upgrade Notice ==
 
-= 1.1.0 – December 11, 2025 =
-**Security Advisory**: This update addresses a Missing Authorization vulnerability (CVE-2025-14270) that allowed authenticated users with Editor role or higher to modify plugin settings without proper authorization.
-**Credits**: Thank you to the Wordfence security team for responsible disclosure and the WordPress.org Plugins Repository team for the report.
+= 1.1.1 – March 27, 2026 =
+#### **New Features**
+* **Automated Checkbox Migration Routine** – Background database migration (`wa_order_run_migrations`) runs automatically on update, inspecting database state and repairing corrupted settings options back to their intended `'yes'`/`'no'` values.
+* **Migration Admin Notice** – One-time dismissible notice for administrators confirming when the database repair is complete, with a link to review settings.
+* **WooCommerce Block Cart Support** – Full support for the Gutenberg-based Block Cart via dual-mode hook approach. Uses `MutationObserver` JavaScript injection to wait for React hydration before inserting the WhatsApp checkout button.
+* **Block Cart "Hide Checkout" Support** – Scoped dynamic CSS injected via `wp_head` to hide the Block Cart's native checkout button, since `remove_action('woocommerce_proceed_to_checkout')` is ignored by Block Cart.
 
-#### **Security Update**
-* **Authorization Fix** – Added proper capability checks to restrict WhatsApp number management to administrators only
-* **Custom Post Type Restriction** – WhatsApp Numbers CPT now requires `manage_options` capability for all operations
-* **Nonce Verification** – Enhanced CSRF protection for all save operations
-
-#### **Technical Details**
-* **Minimal Implementation** – Security fix with no impact on existing functionality
-* **Backward Compatible** – All existing features work exactly as before
-* **WordPress Standards** – Uses WordPress core capability system
-
-#### **Important Notes**
-* **Security Update** – Addresses unauthorized settings modification issue
-* **No Breaking Changes** – Only administrators could previously access these settings in the UI
-* **Immediate Update Recommended** – Update to ensure proper authorization controls
+#### **Bug Fixes**
+* Fixed a major glitch causing all checkbox-based plugin settings (e.g. enabling/disabling cart buttons, altering visibility, GDPR toggles) to fail to save across the entire plugin.
+* Restored missing `sanitize_checkbox` callbacks across 35+ `register_setting` rules, correctly translating checkbox states to binary `'yes'`/`'no'` options.
+* Fixed the WhatsApp Cart Button not rendering on sites using modern block themes (e.g. Twenty Twenty-Five) due to WooCommerce transitioning from legacy shortcodes to React-based Block Cart.
